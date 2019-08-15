@@ -1,6 +1,7 @@
 os:
   - linux
   - osx
+sudo: false
 dist: trusty
 osx_image: xcode10.1
 
@@ -18,20 +19,18 @@ git:
 env:
   matrix:
     - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
+    - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
+    - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
+    - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_THREAD_SUPPORT=ON"
+    - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_DEBUG_MODE=ON"
+    - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_MM_REPLACEMENT=ON"
+    - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS=""
+    - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS="--disable-openssl"
+    - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS="--disable-thread-support"
+    - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
+    - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS="--disable-malloc-replacement"
 
 matrix:
-  include:
-    # openssl1.1
-    - env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
-      addons:
-        apt:
-          sources:
-          - debian-sid
-          packages:
-          - zlib1g-dev
-          - libssl-dev
-          - cmake
-          - binutils
   exclude:
     - os: osx
       env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
@@ -58,6 +57,7 @@ before_install:
       if [ "$CC" == "gcc" ]; then
         export CC=$(ls /usr/local/Cellar/gcc/*/bin/gcc-?);
       fi
+
       export OPENSSL_ROOT=$(echo /usr/local/Cellar/openssl/*);
       export
         CMAKE_INCLUDE_PATH=$OPENSSL_ROOT/include
@@ -75,7 +75,6 @@ addons:
     - xenial
     - sourceline: 'deb http://archive.ubuntu.com/ubuntu xenial main'
     packages:
-    - openssl
     - zlib1g-dev
     - libssl-dev
     - build-essential
