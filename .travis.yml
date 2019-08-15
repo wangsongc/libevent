@@ -20,6 +20,18 @@ env:
     - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
 
 matrix:
+  include:
+    # openssl1.1
+    - env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
+      addons:
+        apt:
+          sources:
+          - debian-sid
+          packages:
+          - zlib1g-dev
+          - libssl-dev
+          - cmake
+          - binutils
   exclude:
     - os: osx
       env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
@@ -46,7 +58,6 @@ before_install:
       if [ "$CC" == "gcc" ]; then
         export CC=$(ls /usr/local/Cellar/gcc/*/bin/gcc-?);
       fi
-      ll /usr/local/Cellar/openssl
       export OPENSSL_ROOT=$(echo /usr/local/Cellar/openssl/*);
       export
         CMAKE_INCLUDE_PATH=$OPENSSL_ROOT/include
