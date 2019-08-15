@@ -1,7 +1,6 @@
 os:
   - linux
   - osx
-sudo: false
 dist: trusty
 osx_image: xcode10.1
 
@@ -53,7 +52,7 @@ before_install:
     fi
   - export JOBS=20
   - export TIMEOUT=50
-  - rm -rf /usr/bin/openssl
+  - sudo rm -rf /usr/bin/openssl
   - wget https://www.openssl.org/source/openssl-1.1.0f.tar.gz
   - tar xzvf openssl-1.1.0f.tar.gz
   - cd openssl-1.1.0f
