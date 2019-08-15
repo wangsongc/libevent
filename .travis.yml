@@ -64,6 +64,7 @@ addons:
     - xenial
     - sourceline: 'deb http://archive.ubuntu.com/ubuntu xenial main'
     packages:
+    - openssl
     - zlib1g-dev
     - libssl-dev
     - build-essential
@@ -71,7 +72,6 @@ addons:
     - autoconf
     - cmake
     - lcov
-    - openssl
   homebrew:
     packages:
     - openssl
