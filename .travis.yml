@@ -1,7 +1,6 @@
 os:
   - linux
   - osx
-sudo: false
 dist: trusty
 osx_image: xcode10.1
 
@@ -82,9 +81,9 @@ addons:
     - autoconf
     - cmake
     - lcov
+    - openssl
   homebrew:
     packages:
-    - openssl
     - lcov
     - libtool
     - gcc
