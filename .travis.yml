@@ -71,7 +71,7 @@ addons:
     - autoconf
     - cmake
     - lcov
-    - openssl1.1.0
+    - openssl
   homebrew:
     packages:
     - openssl
