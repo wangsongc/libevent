@@ -46,17 +46,19 @@ before_install:
   - export JOBS=20
   - export TIMEOUT=50
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-    sudo rm -rf /usr/bin/openssl;
-    wget https://www.openssl.org/source/openssl-1.1.0f.tar.gz;
-    tar xzvf openssl-1.1.0f.tar.gz;
-    cd openssl-1.1.0f;
-    ./config -Wl,--enable-new-dtags,-rpath,'$(LIBRPATH)';
-    make;
-    sudo make install;
-    sudo ln -s /usr/local/bin/openssl /usr/bin/openssl;
-    sudo ln -s /usr/local/lib/libssl.so.1.1 /usr/lib/libssl.so.1.1;
+    sudo mv /usr/bin/openssl /usr/bin/openssl.old;
+    sudo mv /usr/include/openssl /usr/include/openssl.old;
+    wget  http://www.openssl.org/source/openssl-1.1.0e.tar.gz;
+    tar -zxvf openssl-1.1.0e.tar.gz;
+    cd /openssl-1.1.0e;
+    sudo ./config shared zlib  --prefix=/usr/local/openssl && make && make install;
+    sudo ln -s /usr/local/openssl/bin/openssl /usr/bin/openssl;
+    sudo ln -s /usr/local/openssl/include/openssl /usr/include/openssl;
+    sudo ln -sf /usr/local/openssl/lib/libcrypto.so.1.0.0 /lib/libcrypto.so.6;
+    sudo echo "/usr/local/openssl/lib" >>/etc/ld.so.conf;
+    ldconfig -v;
     cd ..;
-    sudo rm -rf openssl-1.1.0f.tar.gz openssl-1.1.0f;
+    sudo rm -rf openssl-1.1.0e.tar.gz openssl-1.1.0e;
     openssl version -a;
     sudo apt-get install libssl-dev zlib1g-dev;
     fi
