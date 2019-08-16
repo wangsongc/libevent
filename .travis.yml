@@ -51,18 +51,20 @@ before_install:
       pip install --user cpp-coveralls;
     fi
   - export JOBS=20
-  - export TIMEOUT=50
-  - sudo rm -rf /usr/bin/openssl
-  - wget https://www.openssl.org/source/openssl-1.1.0f.tar.gz
-  - tar xzvf openssl-1.1.0f.tar.gz
-  - cd openssl-1.1.0f
-  - ./config -Wl,--enable-new-dtags,-rpath,'$(LIBRPATH)'
-  - make
-  - sudo make install
-  - sudo ln -s /usr/local/bin/openssl /usr/bin/openssl
-  - cd ..
-  - sudo rm -rf openssl-1.1.0f.tar.gz openssl-1.1.0f
-  - openssl version -a
+  - export TIMEOUT=100
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+   sudo rm -rf /usr/bin/openssl
+   wget https://www.openssl.org/source/openssl-1.1.0f.tar.gz
+   tar xzvf openssl-1.1.0f.tar.gz
+   cd openssl-1.1.0f
+   ./config -Wl,--enable-new-dtags,-rpath,'$(LIBRPATH)'
+   make
+   sudo make install
+   sudo ln -s /usr/local/bin/openssl /usr/bin/openssl
+   cd ..
+   sudo rm -rf openssl-1.1.0f.tar.gz openssl-1.1.0f
+   openssl version -a
+    fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
       if [ "$CC" == "gcc" ]; then
         export CC=$(ls /usr/local/Cellar/gcc/*/bin/gcc-?);
