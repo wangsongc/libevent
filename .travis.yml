@@ -48,10 +48,10 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     sudo mv /usr/bin/openssl /usr/bin/openssl.old;
     sudo mv /usr/include/openssl /usr/include/openssl.old;
-    wget  http://www.openssl.org/source/openssl-1.1.0e.tar.gz;
+    wget http://www.openssl.org/source/openssl-1.1.0e.tar.gz;
     tar -zxvf openssl-1.1.0e.tar.gz;
     cd /openssl-1.1.0e;
-    sudo ./config shared zlib  --prefix=/usr/local/openssl && make && make install;
+    sudo ./config shared zlib --prefix=/usr/local/openssl && make && make install;
     sudo ln -s /usr/local/openssl/bin/openssl /usr/bin/openssl;
     sudo ln -s /usr/local/openssl/include/openssl /usr/include/openssl;
     sudo ln -sf /usr/local/openssl/lib/libcrypto.so.1.0.0 /lib/libcrypto.so.6;
