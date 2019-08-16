@@ -51,11 +51,11 @@ before_install:
     wget https://www.openssl.org/source/openssl-1.1.0e.tar.gz;
     tar -zxvf openssl-1.1.0e.tar.gz;
     cd openssl-1.1.0e;
-    sudo ./config shared zlib --prefix=/usr/local/openssl && make && make install;
-    sudo ln -s /usr/local/openssl/bin/openssl /usr/bin/openssl;
-    sudo ln -s /usr/local/openssl/include/openssl /usr/include/openssl;
-    sudo ln -sf /usr/local/openssl/lib/libcrypto.so.1.0.0 /lib/libcrypto.so.6;
-    sudo echo "/usr/local/openssl/lib" >>/etc/ld.so.conf;
+    sudo ./config && make && make install;
+    sudo ln -s /usr/local/bin/openssl /usr/bin/openssl;
+    sudo ln -s /usr/local/include/openssl /usr/include/openssl;
+    sudo ln -sf /usr/local/lib/libcrypto.so.1.0.0 /lib/libcrypto.so.6;
+    sudo echo "/usr/local/lib" >>/etc/ld.so.conf;
     ldconfig -v;
     cd ..;
     sudo rm -rf openssl-1.1.0e.tar.gz openssl-1.1.0e;
