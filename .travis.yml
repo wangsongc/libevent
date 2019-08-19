@@ -1,7 +1,7 @@
 os:
   - linux
 #  - osx
-dist: bionic
+#dist: bionic
 #dist: trusty
 osx_image: xcode10.1
 
@@ -50,8 +50,8 @@ before_install:
 addons:
   apt:
     sources:
-    - xenial
-    - sourceline: 'deb http://archive.ubuntu.com/ubuntu xenial main'
+    - bionic
+    - sourceline: 'deb http://archive.ubuntu.com/ubuntu bionic main'
     packages:
     - zlib1g-dev
     - libssl-dev
@@ -60,6 +60,7 @@ addons:
     - autoconf
     - cmake
     - lcov
+    - openssl
   homebrew:
     packages:
     - openssl
