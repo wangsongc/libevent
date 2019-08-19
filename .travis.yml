@@ -70,7 +70,7 @@ addons:
 script:
   - if [ "$EVENT_BUILD_METHOD" = "autotools" ]; then
       ./autogen.sh &&
-      ./configure $EVENT_CONFIGURE_OPTIONS &&
+      ./configure $EVENT_CONFIGURE_OPTIONS --disable-libevent-regress &&
       make &&
       travis_wait $TIMEOUT make -j $JOBS verify;
     fi
