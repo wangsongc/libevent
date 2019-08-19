@@ -60,7 +60,6 @@ addons:
     - autoconf
     - cmake
     - lcov
-    - openssl
   homebrew:
     packages:
     - openssl
