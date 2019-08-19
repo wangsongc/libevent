@@ -45,37 +45,7 @@ before_install:
     fi
   - export JOBS=20
   - export TIMEOUT=50
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-    sudo rm -rf /usr/bin/openssl;
-    wget https://www.openssl.org/source/openssl-1.1.0f.tar.gz;
-    tar xzvf openssl-1.1.0f.tar.gz;
-    cd openssl-1.1.0f;
-    ./config -Wl,--enable-new-dtags,-rpath,'$(LIBRPATH)';
-    make;
-    sudo make install;
-    sudo ln -s /usr/local/bin/openssl /usr/bin/openssl;
-    sudo ln -s /usr/local/lib/libssl.so.1.1 /usr/lib/libssl.so.1.1;
-    sudo ln -s /usr/local/lib/libcrypto.so.1.1 /usr/lib/libcrypto.so.1.1;
-    cd ..;
-    sudo rm -rf openssl-1.1.0f.tar.gz openssl-1.1.0f;
-    openssl version -a;
-    fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-      if [ "$CC" == "gcc" ]; then
-        export CC=$(ls /usr/local/Cellar/gcc/*/bin/gcc-?);
-      fi
-
-      export OPENSSL_ROOT=$(echo /usr/local/Cellar/openssl/*);
-      export
-        CMAKE_INCLUDE_PATH=$OPENSSL_ROOT/include
-        CMAKE_LIBRARY_PATH=$OPENSSL_ROOT/lib;
-      export
-        CFLAGS=-I$CMAKE_INCLUDE_PATH
-        LDFLAGS=-L$CMAKE_LIBRARY_PATH;
-
-      export JOBS=1;
-    fi
-
+ 
 addons:
   apt:
     sources:
