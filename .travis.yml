@@ -36,7 +36,6 @@ matrix:
       dist: bionic
       env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
       compiler: gcc
-  include: 
     - os: linux
       dist: bionic
       env: EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS=""
