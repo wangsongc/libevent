@@ -10,7 +10,6 @@ git:
   quiet: true
 
 env:
-  matrix:
     - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
     - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
     - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
@@ -19,9 +18,10 @@ env:
 matrix:
   include:
     - os: linux
-      dist:trusty
+      dist: trusty
+      env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
     - os: linux
-      dist:bionic
+      dist: bionic
   exclude:
     - os: osx
       env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
