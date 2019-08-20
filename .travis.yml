@@ -7,20 +7,48 @@ branches:
   - /.*bitrise.*/
 
 git:
-  quiet: true
-
-env:
-    - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
-    - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
-    - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
-  
+  quiet: true  
 
 matrix:
   include:
     - os: linux
       dist: trusty
+      env:
+          - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
+          - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
+          - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
+      addons:
+        apt:
+          sources:
+          - trusty
+          - sourceline: 'deb http://archive.ubuntu.com/ubuntu trusty main'
+          packages:
+          - zlib1g-dev
+          - libssl-dev
+          - build-essential
+          - automake
+          - autoconf
+          - cmake
+          - lcov
     - os: linux
       dist: bionic
+      env:
+          - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
+          - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
+          - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
+      addons:
+        apt:
+          sources:
+          - bionic
+          - sourceline: 'deb http://archive.ubuntu.com/ubuntu bionic main'
+          packages:
+          - zlib1g-dev
+          - libssl-dev
+          - build-essential
+          - automake
+          - autoconf
+          - cmake
+          - lcov
   exclude:
     - os: osx
       env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
