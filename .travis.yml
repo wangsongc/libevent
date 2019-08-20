@@ -1,8 +1,12 @@
 os:
   - linux
-#  - osx
-#dist: bionic
-#dist: trusty
+dist: trusty
+os:
+  - linux
+dist: bionic
+
+os:
+  - osx
 osx_image: xcode10.1
 
 branches:
