@@ -1,8 +1,9 @@
 os:
   - linux
-#  - osx
+  - osx
+sudo: false
 dist: trusty
-#osx_image: xcode10.1
+osx_image: xcode10.1
 
 branches:
   except:
@@ -11,38 +12,42 @@ branches:
   - /.*mingw.*/
   - /.*freebsd.*/
   - /.*bitrise.*/
+
+git:
+  quiet: true
+
 env:
   matrix:
     - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
     - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
+    - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
+    - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_THREAD_SUPPORT=ON"
+    - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_DEBUG_MODE=ON"
+    - EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_MM_REPLACEMENT=ON"
+    - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS=""
+    - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS="--disable-openssl"
+    - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS="--disable-thread-support"
     - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
-git:
-  quiet: true  
+    - EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS="--disable-malloc-replacement"
 
 matrix:
   include: 
     - os: linux
       dist: bionic
       env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
+      compiler: gcc
+  include: 
+    - os: linux
+      dist: bionic
+      env: EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS=""
+      compiler: clang
   exclude:
     - os: osx
       env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
   allow_failures:
     - os: osx
   fast_finish: true
-addons:
-       apt:
-         sources:
-         - xenial
-         - sourceline: 'deb http://archive.ubuntu.com/ubuntu xenial main'
-         packages:
-         - zlib1g-dev
-         - libssl-dev
-         - build-essential
-         - automake
-         - autoconf
-         - cmake
-         - lcov
+
 language: c
 compiler:
   - gcc
@@ -58,11 +63,47 @@ before_install:
     fi
   - export JOBS=20
   - export TIMEOUT=50
- 
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+      if [ "$CC" == "gcc" ]; then
+        export CC=$(ls /usr/local/Cellar/gcc/*/bin/gcc-?);
+      fi
+
+      export OPENSSL_ROOT=$(echo /usr/local/Cellar/openssl/*);
+      export
+        CMAKE_INCLUDE_PATH=$OPENSSL_ROOT/include
+        CMAKE_LIBRARY_PATH=$OPENSSL_ROOT/lib;
+      export
+        CFLAGS=-I$CMAKE_INCLUDE_PATH
+        LDFLAGS=-L$CMAKE_LIBRARY_PATH;
+
+      export JOBS=1;
+    fi
+
+addons:
+  apt:
+    sources:
+    - xenial
+    - sourceline: 'deb http://archive.ubuntu.com/ubuntu xenial main'
+    packages:
+    - zlib1g-dev
+    - libssl-dev
+    - build-essential
+    - automake
+    - autoconf
+    - cmake
+    - lcov
+  homebrew:
+    packages:
+    - openssl
+    - lcov
+    - libtool
+    - gcc
+
+
 script:
   - if [ "$EVENT_BUILD_METHOD" = "autotools" ]; then
       ./autogen.sh &&
-      ./configure $EVENT_CONFIGURE_OPTIONS --disable-libevent-regress &&
+      ./configure $EVENT_CONFIGURE_OPTIONS &&
       make &&
       travis_wait $TIMEOUT make -j $JOBS verify;
     fi
@@ -73,7 +114,7 @@ script:
 
       mkdir build &&
       cd build &&
-      cmake .. $EVENT_CMAKE_OPTIONS -DEVENT__DISABLE_REGRESS=ON &&
+      cmake .. $EVENT_CMAKE_OPTIONS &&
       travis_wait $TIMEOUT
       cmake --build . --target verify;
     fi
