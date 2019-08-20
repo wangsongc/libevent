@@ -72,27 +72,6 @@ before_install:
   - export JOBS=20
   - export TIMEOUT=50
  
-addons:
-  apt:
-    sources:
-    - bionic
-    - sourceline: 'deb http://archive.ubuntu.com/ubuntu bionic main'
-    packages:
-    - zlib1g-dev
-    - libssl-dev
-    - build-essential
-    - automake
-    - autoconf
-    - cmake
-    - lcov
-  homebrew:
-    packages:
-    - openssl
-    - lcov
-    - libtool
-    - gcc
-
-
 script:
   - if [ "$EVENT_BUILD_METHOD" = "autotools" ]; then
       ./autogen.sh &&
