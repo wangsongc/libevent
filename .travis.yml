@@ -1,10 +1,7 @@
 os:
   - linux
-dist: trusty
-  - linux
-dist: bionic
   - osx
-osx_image: xcode10.1
+
 
 branches:
   except:
@@ -25,6 +22,11 @@ env:
   
 
 matrix:
+  include:
+    - os: linux
+      dist:trusty
+    - os: linux
+      dist:bionic
   exclude:
     - os: osx
       env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
