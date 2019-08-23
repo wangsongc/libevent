@@ -20,7 +20,7 @@ matrix:
         github_token: $GITHUB_API_TOKEN
         local_dir: build/doc/html
         on:
-          branch: dev
+          branch: cc
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq; fi
@@ -31,7 +31,7 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd ../boost_1_64_0; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./bootstrap.sh --with-libraries=test,program_options,system,filesystem; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ./b2 -j 4 install > /dev/null 2>&1; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ./b2 -j 4 install > /master-doc/null 2>&1; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd $TRAVIS_BUILD_DIR; fi
 before_script: 
   - mkdir build; cd build
@@ -40,6 +40,6 @@ script:
   - if [[ $TOOL != "doxygen" ]]; then make -j; fi
   - if [[ $TOOL != "doxygen" ]]; then make test; fi
 after_script:
-  - if [[ $TOOL == "doxygen" ]]; then cd build; make doc; fi
+  - if [[ $TOOL == "doxygen" ]]; then doxygen Doxyfile; fi
 notifications:
   email: false
