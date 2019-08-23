@@ -1,5 +1,5 @@
 sudo: required
-language: cpp
+language: c
 dist: trusty
 matrix:
   include:
@@ -28,8 +28,8 @@ install:
 before_script: 
 
 script:
-
+  - if [ $TOOL == "doxygen" ]; then doxygen Doxyfile; fi
 after_script:
-  - if [[ $TOOL == "doxygen" ]]; then doxygen Doxyfile; fi
+  
 notifications:
   email: false
