@@ -32,4 +32,4 @@ script:
 after_script:
   
 notifications:
-  email: false
+ # email: false
