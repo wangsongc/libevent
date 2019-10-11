@@ -449,7 +449,6 @@ main(int argc, char **argv)
 	struct event_base *base = NULL;
 	struct evhttp *http = NULL;
 	struct evhttp_bound_socket *handle = NULL;
-	struct evconnlistener *lev = NULL;
 	struct event *term = NULL;
 	struct options o = parse_opts(argc, argv);
 	int ret = 0;
@@ -510,6 +509,7 @@ main(int argc, char **argv)
 
 	if (o.unixsock) {
 #ifdef EVENT__HAVE_STRUCT_SOCKADDR_UN
+		struct evconnlistener *lev = NULL;
 		struct sockaddr_un addr;
 
 		if (o.unlink && (unlink(o.unixsock) && errno != ENOENT)) {

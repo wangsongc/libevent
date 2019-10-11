@@ -36,6 +36,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <inttypes.h>
+#ifdef _WIN32
+  #ifdef _WIN64
+    #define PRI_SIZET PRIu64
+  #else
+    #define PRI_SIZET PRIu32
+  #endif
+#else
+  #define PRI_SIZET "zu"
+#endif
 
 #ifdef __GNUC__
 #define CHECK_FMT(a,b) __attribute__((format(printf, a, b)))
@@ -113,7 +123,7 @@ static void be_free(struct bufferevent **bevp)
 		return;
 
 	fd = bufferevent_getfd(bev);
-	info("Freeing bufferevent with fd=%d\n", fd);
+	info("Freeing bufferevent with fd=%" PRI_SIZET "\n", fd);
 
 	bufferevent_free(bev);
 	*bevp = NULL;
@@ -387,7 +397,7 @@ static int event_cb_(struct bufferevent *bev, short what, int ssl, int stop)
 	if (stop)
 		event_base_loopexit(base, NULL);
 
-	error("Got 0x%x event on fd=%d. Terminating connection\n", what, fd);
+	error("Got 0x%x event on fd=%" PRI_SIZET ". Terminating connection\n", what, fd);
 	be_free(&bev);
 	return 1;
 }
@@ -424,12 +434,12 @@ accept_cb(struct evconnlistener *listener, evutil_socket_t fd,
 	if (!ctx->opts->extra.keep)
 		evconnlistener_disable(listener);
 
-	info("Accepting %s (fd=%d)\n",
+	info("Accepting %s (fd=%" PRI_SIZET ")\n",
 		evutil_format_sockaddr_port_(sa, buffer, sizeof(buffer)-1), fd);
 
 	bev = be_new(ctx, base, fd);
 	if (!bev) {
-		error("Cannot make bufferevent for fd=%d\n", fd);
+		error("Cannot make bufferevent for fd=%" PRI_SIZET "\n", fd);
 		goto err;
 	}
 

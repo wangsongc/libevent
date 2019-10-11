@@ -34,6 +34,17 @@
 
 #include "event2/event-config.h"
 
+#include <inttypes.h>
+#ifdef _WIN32
+  #ifdef _WIN64
+    #define PRI_SIZET PRIu64
+  #else
+    #define PRI_SIZET PRIu32
+  #endif
+#else
+  #define PRI_SIZET "zu"
+#endif
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifdef EVENT__HAVE_SYS_TIME_H
@@ -4348,7 +4359,7 @@ http_data_length_constraints_test_impl(void *arg, int read_on_write_error)
 	evhttp_connection_set_local_address(evcon, "127.0.0.1");
 
 	evhttp_set_max_headers_size(http, size - 1);
-	TT_BLATHER(("Set max header size %zu", size - 1));
+	TT_BLATHER(("Set max header size %" PRI_SIZET , size - 1));
 
 	req = evhttp_request_new(http_data_length_constraints_test_done, data->base);
 	tt_assert(req);
@@ -4371,7 +4382,7 @@ http_data_length_constraints_test_impl(void *arg, int read_on_write_error)
 	event_base_dispatch(data->base);
 
 	evhttp_set_max_body_size(http, size - 2);
-	TT_BLATHER(("Set body header size %zu", size - 2));
+	TT_BLATHER(("Set body header size %" PRI_SIZET , size - 2));
 
 	if (read_on_write_error)
 		cb = http_large_entity_test_done;

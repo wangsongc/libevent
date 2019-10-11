@@ -108,14 +108,13 @@ testcase_run_in_thread_(const struct testcase_t *testcase, void *env)
 {
 	/* We will never run testcase in a new thread when the
 	timeout is set to zero */
-	assert(opt_timeout);
 	DWORD ret, tid;
 	HANDLE handle;
 	struct timeout_thread_args args = {
 		&(testcase->fn),
 		env
 	};
-
+	assert(opt_timeout);
 	handle =CreateThread(NULL, 0, timeout_thread_proc_,
 		(LPVOID)&args, 0, &tid);
 	ret = WaitForSingleObject(handle, opt_timeout * 1000U);
