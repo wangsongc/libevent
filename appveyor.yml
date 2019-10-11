@@ -16,6 +16,11 @@ skip_commits:
   message: /travis/
   files:
     - .travis.yml
+    - LICENSE
+    - 'ChangeLog*'
+    - .mailmap
+    - '**/*.md'
+    - 'whatsnew*.txt'
 
 environment:
   global:
