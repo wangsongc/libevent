@@ -2,8 +2,8 @@
 version: 2.2.0.{build}
 
 os:
-  - Visual Studio 2017
   - Visual Studio 2019
+  - Visual Studio 2017
 platform:
   - x64
 
@@ -105,6 +105,7 @@ build_script:
         bash -c $script
 
       } else {
+        $env:PATH="$env:OPENSSL_ROOT/bin;$env:PATH"
         if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2017') {
           $env:BUILD_DIR="build-cmake"
         }
