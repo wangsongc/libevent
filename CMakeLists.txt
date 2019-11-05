@@ -153,6 +153,8 @@ option(EVENT__DISABLE_CLOCK_GETTIME
 option(EVENT__FORCE_KQUEUE_CHECK
     "When crosscompiling forces running a test program that verifies that Kqueue works with pipes. Note that this requires you to manually run the test program on the cross compilation target to verify that it works. See cmake documentation for try_run for more details" OFF)
 
+option(EVENT__ENABLE_FUZZING "Build fuzzing targets" OFF)
+
 # TODO: Add --disable-largefile     omit support for large files
 option(EVENT__COVERAGE
 "Enable running gcov to get a test coverage report (only works with GCC/CLang). Make sure to enable -DCMAKE_BUILD_TYPE=Debug as well." OFF)
@@ -938,6 +940,18 @@ configure_file(
     ${CMAKE_CURRENT_BINARY_DIR}/include/evconfig-private.h)
 
 #
+# Fuzzing
+#
+if (EVENT__ENABLE_FUZZING)
+    if (NOT UNIX)
+        message(FATAL_ERROR "UNIX Only")
+    endif()
+
+    include(AddFuzzerFlags)
+    add_fuzzer_flags()
+endif()
+
+#
 # Create the libraries.
 #
 include(AddEventLibrary)
@@ -1431,6 +1445,10 @@ if (NOT EVENT__DISABLE_TESTS)
     enable_testing()
 
     include(CTest)
+endif()
+
+if (EVENT__ENABLE_FUZZING)
+    add_subdirectory(fuzz)
 endif()
 
 #
