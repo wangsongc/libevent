@@ -19,7 +19,6 @@ jobs:
     - uses: actions/checkout@v1
     - name: install depend
       run: |
-        brew update
         brew install openssl
         brew install lcov
         brew install libtool
@@ -37,6 +36,7 @@ jobs:
         if [ ${{ matrix.pattern }} == 0 ]; then
           EVENT_BUILD_METHOD="cmake"
           EVENT_CMAKE_OPTIONS=""
+          export OPENSSL_INCLUDE_DIR="/usr/local/opt/openssl"
           JOBS=1
         fi
         # build and test
