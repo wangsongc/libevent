@@ -16,7 +16,7 @@ jobs:
       matrix:
         pattern: [0, 1, 2, 3]
     steps:
-    # - uses: actions/checkout@v1
+    - uses: actions/checkout@v1
     - name: install depend
       run: |
         brew install openssl lcov libtool gcc
@@ -26,6 +26,7 @@ jobs:
 #         CXX: clang++
       shell: bash
       run: |
+        pwd;
         BASE=`pwd`;
         mkdir ${BASE}/usr;
         # matrix config
@@ -49,6 +50,7 @@ jobs:
 
           mkdir build &&
           cd build &&
+          pwd &&
           cmake .. $EVENT_CMAKE_OPTIONS;
           if [ "$TEST_EXPORT" == "STATIC" ]; then
             cmake --build .;
