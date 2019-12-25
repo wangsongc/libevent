@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+    - gha
+    tags:
+    - '*'
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        pattern: [0, 1, 2, 3]
+    steps:
+    # - uses: actions/checkout@v1
+    - name: install depend
+      run: |
+        brew install openssl lcov libtool gcc
+    - name: build and test
+      env:
+        CC: clang
+        CXX: clang++
+      shell: bash
+      run: |
+        BASE=`pwd`;
+        mkdir ${BASE}/usr;
+        # matrix config
+        if [ ${{ matrix.pattern }} == 0 ]; then
+          EVENT_BUILD_METHOD="cmake"
+          EVENT_CMAKE_OPTIONS=""
+          JOBS=1
+        fi
+        # build and test
+        if [ "$EVENT_BUILD_METHOD" = "autotools" ]; then
+          ./autogen.sh &&
+          ./configure $EVENT_CONFIGURE_OPTIONS &&
+          make &&
+          make -j $JOBS verify;
+        fi
+        if [ "$EVENT_BUILD_METHOD" = "cmake" ]; then
+          export
+          CTEST_PARALLEL_LEVEL=$JOBS
+          CTEST_OUTPUT_ON_FAILURE=1;
+
+          mkdir build &&
+          cd build &&
+          cmake .. $EVENT_CMAKE_OPTIONS;
+          if [ "$TEST_EXPORT" == "STATIC" ]; then
+            cmake --build .;
+            sudo python3 ../test-export/test-export.py static;
+          elif [ "$TEST_EXPORT" == "SHARED" ]; then
+            cmake --build .;
+            sudo python3 ../test-export/test-export.py shared;
+          else
+            travis_wait $TIMEOUT cmake --build . --target verify;
+          fi
+        fi
+        if [ "$TOOL" == "doxygen" ]; then
+          eval "$(ssh-agent -s)";
+          openssl aes-256-cbc
+            -K $encrypted_82aa789583ed_key
+            -iv $encrypted_82aa789583ed_iv
+            -in .github/travis-ci-key.enc
+            -out .github/travis-ci-key -d;
+          chmod 600 .github/travis-ci-key;
+          ssh-add .github/travis-ci-key;
+
+          mkdir build &&
+          cd build &&
+          cmake -DEVENT__DOXYGEN=ON .. &&
+          cmake --build . --target doxygen;
+
+          cd doxygen/html;
+
+          git init;
+          git add -f .;
+          git commit -am "Update documentation ($TRAVIS_REPO_SLUG@$TRAVIS_COMMIT)";
+          git push -f git@github.com:libevent/doc.git master;
+        fi
