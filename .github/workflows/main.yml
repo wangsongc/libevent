@@ -19,7 +19,11 @@ jobs:
     - uses: actions/checkout@v1
     - name: install depend
       run: |
-        brew install openssl lcov libtool gcc
+        brew update
+        brew install openssl
+        brew install lcov
+        brew install libtool
+        brew install gcc
     - name: build and test
       env:
         CC: gcc
