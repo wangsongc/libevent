@@ -63,7 +63,7 @@ jobs:
             cmake --build .;
             sudo python3 ../test-export/test-export.py shared;
           else
-            travis_wait $TIMEOUT cmake --build . --target verify;
+            cmake --build . --target verify;
           fi
         fi
         if [ "$TOOL" == "doxygen" ]; then
