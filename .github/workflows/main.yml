@@ -22,8 +22,8 @@ jobs:
         brew install openssl lcov libtool gcc
     - name: build and test
       env:
-        CC: clang
-        CXX: clang++
+        CC: gcc
+#         CXX: clang++
       shell: bash
       run: |
         BASE=`pwd`;
@@ -42,6 +42,7 @@ jobs:
           make -j $JOBS verify;
         fi
         if [ "$EVENT_BUILD_METHOD" = "cmake" ]; then
+          pwd
           export
           CTEST_PARALLEL_LEVEL=$JOBS
           CTEST_OUTPUT_ON_FAILURE=1;
