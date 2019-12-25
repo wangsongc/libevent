@@ -36,7 +36,7 @@ jobs:
         if [ ${{ matrix.pattern }} == 0 ]; then
           EVENT_BUILD_METHOD="cmake"
           EVENT_CMAKE_OPTIONS=""
-          export OPENSSL_INCLUDE_DIR="/usr/local/opt/openssl"
+          export OPENSSL_ROOT_DIR="/usr/local/opt/openssl"
           JOBS=1
         fi
         # build and test
