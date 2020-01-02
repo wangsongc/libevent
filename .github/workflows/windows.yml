@@ -55,9 +55,10 @@ jobs:
           make verify -j $EVENT_TESTS_PARALLEL 2>&1 '
           bash -c $script
         } else {
-          pwd
           $env:PATH="$env:OPENSSL_ROOT/bin;$env:PATH"
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
+          echo $env:LDFLAGS
+          echo $env:CFLAGS
           if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2017") {
             $env:BUILD_DIR="build-cmake"
           }
