@@ -36,7 +36,6 @@ jobs:
           $EVENT_CMAKE_OPTIONS=""
           $JOBS=1
         }
-        fi
         # build and test
         if ($env:EVENT_BUILD_METHOD -eq 'autotools') {
           $env:PATH="$env:MPATH;$env:OPENSSL_ROOT/bin;$env:PATH"
