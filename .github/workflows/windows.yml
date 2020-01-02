@@ -36,13 +36,3 @@ jobs:
           EVENT_CMAKE_OPTIONS=""
           JOBS=1
         fi
-        # build and test
-        if ($env:EVENT_BUILD_METHOD -eq 'autotools') {
-          echo "***1***"
-        } else {
-          md $env:BUILD_DIR 2> $null
-          cd $env:BUILD_DIR
-          $env:cmake_cmd="cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS"
-          cmake --build . -j $env:EVENT_BUILD_PARALLEL -- /nologo /verbosity:minimal
-          ctest --output-on-failure -j $env:EVENT_TESTS_PARALLEL
-        }
