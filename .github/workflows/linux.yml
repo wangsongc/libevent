@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-16.04
     strategy:
       matrix:
-        pattern: ["camke0","cmake1"]
+        pattern: [camke0,cmake1]
     steps:
     - uses: actions/checkout@v1
     - name: install depend
@@ -36,7 +36,7 @@ jobs:
         BASE=`pwd`;
         mkdir ${BASE}/usr;
         # matrix config
-        if [ ${{ matrix.pattern }} == "cmake0" ]; then
+        if [ ${{ matrix.pattern }} == cmake0 ]; then
           EVENT_BUILD_METHOD="cmake"
           EVENT_CMAKE_OPTIONS=""
           JOBS=1
