@@ -37,9 +37,9 @@ jobs:
         mkdir ${BASE}/usr;
         # matrix config
         if [ ${{ matrix.pattern }} == cmake0 ]; then
-          EVENT_BUILD_METHOD="cmake"
-          EVENT_CMAKE_OPTIONS=""
-          JOBS=1
+          export EVENT_BUILD_METHOD="cmake"
+          export EVENT_CMAKE_OPTIONS=""
+          export JOBS=1
         fi
         # build and test
         if [ "$EVENT_BUILD_METHOD" = "autotools" ]; then
