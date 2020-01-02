@@ -65,8 +65,8 @@ jobs:
           if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Previous Visual Studio 2019") {
             $env:BUILD_DIR="build-cmake-vs2019"
           }
-          md $env:BUILD_DIR 2> $null
-          cd $env:BUILD_DIR
+          md build-cmake 2> $null
+          cd build-cmake
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2017") {
             $env:cmake_cmd="cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS"
