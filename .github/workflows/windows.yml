@@ -34,6 +34,7 @@ jobs:
           $EVENT_BUILD_METHOD="cmake"
           $EVENT_CMAKE_OPTIONS=""
           $APPVEYOR_BUILD_WORKER_IMAGE="Visual Studio 2017"
+          echo $env:APPVEYOR_BUILD_WORKER_IMAGE
           $JOBS=1
           echo $env:PATH
         }
