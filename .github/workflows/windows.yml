@@ -30,9 +30,6 @@ jobs:
         EVENT_BUILD_PARALLEL: 10  
       shell: powershell
       run: |
-        pwd;
-        BASE=`pwd`;
-        mkdir ${BASE}/usr;
         # matrix config
         if (${{ matrix.pattern }} -eq cmake0) {
           $EVENT_BUILD_METHOD="cmake"
