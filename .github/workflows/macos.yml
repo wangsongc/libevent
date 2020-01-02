@@ -1,4 +1,4 @@
-name: CI
+name: CI on macos
 
 on:
   pull_request:
