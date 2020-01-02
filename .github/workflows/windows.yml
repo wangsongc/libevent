@@ -84,4 +84,3 @@ jobs:
         } else {
           ctest --output-on-failure -j $env:EVENT_TESTS_PARALLEL
         }
-        }
