@@ -34,10 +34,12 @@ jobs:
         if (${{ matrix.pattern }} -eq 0) {
           $EVENT_BUILD_METHOD="cmake"
           $EVENT_CMAKE_OPTIONS=""
+          $APPVEYOR_BUILD_WORKER_IMAGE="Visual Studio 2017"
           $JOBS=1
+          echo $env:PATH
         }
         # build and test
-        if ($env:EVENT_BUILD_METHOD -eq 'autotools') {
+        if ($env:EVENT_BUILD_METHOD -eq "autotools") {
           $env:PATH="$env:MPATH;$env:OPENSSL_ROOT/bin;$env:PATH"
           $env:LDFLAGS="-L$($env:OPENSSL_ROOT)/lib -L$($env:OPENSSL_ROOT)"
           $env:CFLAGS="-I$($env:OPENSSL_ROOT)/include"
@@ -55,19 +57,19 @@ jobs:
           bash -c $script
         } else {
           $env:PATH="$env:OPENSSL_ROOT/bin;$env:PATH"
-          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2017') {
+          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2017") {
             $env:BUILD_DIR="build-cmake"
           }
-          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Previous Visual Studio 2019') {
+          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Previous Visual Studio 2019") {
             $env:BUILD_DIR="build-cmake-vs2019"
           }
           md $env:BUILD_DIR 2> $null
           cd $env:BUILD_DIR
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2017') {
+          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2017") {
             $env:cmake_cmd="cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS"
           }
-          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Previous Visual Studio 2019') {
+          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Previous Visual Studio 2019") {
             $env:cmake_cmd="cmake -G 'Visual Studio 16 2019' -A x64 .. $env:EVENT_CMAKE_OPTIONS"
           }
           Invoke-Expression $env:cmake_cmd
