@@ -57,6 +57,7 @@ jobs:
         } else {
           pwd
           $env:PATH="$env:OPENSSL_ROOT/bin;$env:PATH"
+          echo $env:APPVEYOR_BUILD_WORKER_IMAGE
           if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2017") {
             $env:BUILD_DIR="build-cmake"
           }
