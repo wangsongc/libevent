@@ -21,7 +21,6 @@ jobs:
       run: |
     - name: build and test
       env:
-        APPVEYOR_SAVE_CACHE_ON_ERROR: true
         OPENSSL_ROOT: C:/Program Files/OpenSSL
         PYTHON3: C:/Python37-x64/python.exe
         MPATH: C:/mingw-w64/x86_64-7.2.0-posix-seh-rt_v5-rev1/mingw64/bin;C:/msys64/usr/bin
@@ -68,14 +67,9 @@ jobs:
           md build-cmake 2> $null
           cd build-cmake
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2017") {
-            $env:cmake_cmd="cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS"
-          }
-          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Previous Visual Studio 2019") {
-            $env:cmake_cmd="cmake -G 'Visual Studio 16 2019' -A x64 .. $env:EVENT_CMAKE_OPTIONS"
-          }
+          cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-            cmake --build . -j $env:EVENT_BUILD_PARALLEL -- /nologo /verbosity:minimal
+          cmake --build . -j $env:EVENT_BUILD_PARALLEL -- /nologo /verbosity:minimal
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           if ($env:TEST_EXPORT -eq 'STATIC') {
             &$env:PYTHON3 ../test-export/test-export.py static
