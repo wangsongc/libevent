@@ -34,11 +34,11 @@ jobs:
         BASE=`pwd`;
         mkdir ${BASE}/usr;
         # matrix config
-        if ($env:matrix.pattern == cmake0) {
-          $env:EVENT_BUILD_METHOD="cmake"
-          $env:EVENT_CMAKE_OPTIONS=""
-          $env:JOBS=1
-          }
+        if (${{ matrix.pattern }} -eq cmake0) {
+          $EVENT_BUILD_METHOD="cmake"
+          $EVENT_CMAKE_OPTIONS=""
+          $JOBS=1
+        }
         fi
         # build and test
         if ($env:EVENT_BUILD_METHOD -eq 'autotools') {
