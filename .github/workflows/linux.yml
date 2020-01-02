@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-16.04
     strategy:
       matrix:
-        pattern: [camke0,cmake1]
+        pattern: [cmake0,cmake1]
     steps:
     - uses: actions/checkout@v1
     - name: install depend
@@ -37,9 +37,9 @@ jobs:
         mkdir ${BASE}/usr;
         # matrix config
         if [ ${{ matrix.pattern }} == cmake0 ]; then
-          export EVENT_BUILD_METHOD="cmake"
-          export EVENT_CMAKE_OPTIONS=""
-          export JOBS=1
+          EVENT_BUILD_METHOD="cmake"
+          EVENT_CMAKE_OPTIONS=""
+          JOBS=1
         fi
         # build and test
         if [ "$EVENT_BUILD_METHOD" = "autotools" ]; then
