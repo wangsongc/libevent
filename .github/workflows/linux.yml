@@ -5,16 +5,14 @@ on:
     types: [opened, synchronize]
   push:
     branches:
-    - gha
-    tags:
-    - '*'
+    - master
 
 jobs:
-  linux:
+  ubuntu-16.04-cmake:
     runs-on: ubuntu-16.04
     strategy:
       matrix:
-        pattern: [cmake0,cmake1]
+        EVENT_CMAKE_OPTIONS: ["","-DEVENT__DISABLE_OPENSSL=ON","-DEVENT__DISABLE_THREAD_SUPPORT=ON","-DEVENT__DISABLE_DEBUG_MODE=ON","-DEVENT__DISABLE_MM_REPLACEMENT=ON"]
     steps:
     - uses: actions/checkout@v1
     - name: install depend
@@ -29,34 +27,17 @@ jobs:
     - name: build and test
       env:
         CC: gcc
-#         CXX: clang++
       shell: bash
       run: |
-        pwd;
-        BASE=`pwd`;
-        mkdir ${BASE}/usr;
         # matrix config
-        if [ ${{ matrix.pattern }} == cmake0 ]; then
-          EVENT_BUILD_METHOD="cmake"
-          EVENT_CMAKE_OPTIONS=""
-          JOBS=1
-        fi
         # build and test
-        if [ "$EVENT_BUILD_METHOD" = "autotools" ]; then
-          ./autogen.sh &&
-          ./configure $EVENT_CONFIGURE_OPTIONS &&
-          make &&
-          make -j $JOBS verify;
-        fi
-        if [ "$EVENT_BUILD_METHOD" = "cmake" ]; then
-          pwd
           export
-          CTEST_PARALLEL_LEVEL=$JOBS
+          CTEST_PARALLEL_LEVEL=1
           CTEST_OUTPUT_ON_FAILURE=1;
           mkdir build &&
           cd build &&
           pwd &&
-          cmake .. $EVENT_CMAKE_OPTIONS;
+          cmake .. ${{ matrix.EVENT_CMAKE_OPTIONS }};
           if [ "$TEST_EXPORT" == "STATIC" ]; then
             cmake --build .;
             sudo python3 ../test-export/test-export.py static;
