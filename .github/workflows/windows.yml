@@ -10,8 +10,8 @@ on:
     - '*'
 
 jobs:
-  linux:
-    runs-on: windows-2019
+  windows:
+    runs-on: windows-latest
     strategy:
       matrix:
         pattern: [0]
@@ -36,7 +36,7 @@ jobs:
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
           $JOBS=1
           echo $env:PATH
-          $env:PATH="$env:OPENSSL_ROOT/bin;$env:PATH"
+          $env:PATH="$env:OPENSSL_ROOT\bin;$env:PATH"
           echo $env:PATH
         }
         # build and test
