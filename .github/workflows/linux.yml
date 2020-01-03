@@ -8,7 +8,7 @@ on:
     - master
 
 jobs:
-  ubuntu_16.04_cmake:
+  cmake:
     runs-on: ubuntu-16.04
     strategy:
       matrix:
