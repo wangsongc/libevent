@@ -70,7 +70,7 @@ jobs:
           md build-cmake 2> $null
           cd build-cmake
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-          cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS
+          cmake -G "Visual Studio 16 2019" -A x64 .. $env:EVENT_CMAKE_OPTIONS
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           cmake --build . -j $env:EVENT_BUILD_PARALLEL -- /nologo /verbosity:minimal
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
