@@ -36,6 +36,8 @@ jobs:
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
           $JOBS=1
           echo $env:PATH
+          $env:PATH="$env:OPENSSL_ROOT/bin;$env:PATH;$env:OPENSSL_ROOT/bin"
+          echo $env:PATH
         }
         # build and test
         if ($env:EVENT_BUILD_METHOD -eq "autotools") {
