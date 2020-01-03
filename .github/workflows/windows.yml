@@ -41,15 +41,15 @@ jobs:
           echo ******1******
           ls $env:OPENSSL_ROOT
           echo ******3******
-          ls C:\Program Files\Git\mingw64
+          ls "C:\Program Files\Git\mingw64"
           echo ******4******
-          ls C:\Program Files\Git\usr
+          ls "C:\Program Files\Git\usr"
           echo ******5******
-          ls C:\Program Files (x86)\Subversion
+          ls "C:\Program Files (x86)\Subversion"
           echo ******6******
-          ls C:\Strawberry\c
+          ls "C:\Strawberry\c"
           echo ******7******
-          ls C:\Program Files\OpenSSL
+          ls "C:\Program Files\OpenSSL"
           
         }
         # build and test
