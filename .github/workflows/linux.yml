@@ -5,12 +5,7 @@ on:
     types: [opened, synchronize]
   push:
     branches:
-      except:
-        - /.*appveyor.*/
-        - /.*win.*/
-        - /.*mingw.*/
-        - /.*freebsd.*/
-        - /.*bitrise.*/
+    - master
 
 jobs:
   cmake:
