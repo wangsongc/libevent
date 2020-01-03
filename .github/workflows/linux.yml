@@ -5,31 +5,65 @@ on:
     types: [opened, synchronize]
   push:
     branches:
-    - master
+      except:
+        - /.*appveyor.*/
+        - /.*win.*/
+        - /.*mingw.*/
+        - /.*freebsd.*/
+        - /.*bitrise.*/
 
 jobs:
   cmake:
-    runs-on: ubuntu-16.04
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-16.04]
         EVENT_CMAKE_OPTIONS: ["","-DEVENT__DISABLE_OPENSSL=ON","-DEVENT__DISABLE_THREAD_SUPPORT=ON","-DEVENT__DISABLE_DEBUG_MODE=ON","-DEVENT__DISABLE_MM_REPLACEMENT=ON"]
+        include:
+          # clang
+          - os: ubuntu-16.04
+            env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
+            compiler: clang
+          - os: ubuntu-16.04
+            env: EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS=""
+            compiler: clang
+          # coveralls
+          - os: ubuntu-16.04
+            env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
+          # test-export
+          - os: ubuntu-16.04
+            env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON" TEST_EXPORT=STATIC
+          - os: ubuntu-16.04
+            env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=SHARED -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON" TEST_EXPORT=SHARED
+          # for openssl1.1
+          - os: ubuntu-18.04
+            env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="" OPENSSL_1_1=yes
+          # deploy documentation to github pages
+          - os: ubuntu-16.04
+            env: TOOL=doxygen
+            addons:
+              apt:
+                packages:
+                  - doxygen
+                  - doxygen-doc
+                  - doxygen-latex
+                  - doxygen-gui
+                  - graphviz
+                  - cmake
+            branches:
+              only:
+                - master
+            if: repo = libevent/libevent AND branch = master AND type != pull_request 
     steps:
     - uses: actions/checkout@v1
     - name: install depend
       run: |
-        sudo apt install zlib1g-dev
-        sudo apt install libssl-dev
-        sudo apt install build-essential
-        sudo apt install automake
-        sudo apt install autoconf
-        sudo apt install cmake
-        sudo apt install lcov
+        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
     - name: build and test
       env:
         CC: gcc
       shell: bash
       run: |
-        # matrix config
         # build and test
           export
           CTEST_PARALLEL_LEVEL=1
@@ -47,7 +81,6 @@ jobs:
           else
             cmake --build . --target verify;
           fi
-        fi
         if [ "$TOOL" == "doxygen" ]; then
           eval "$(ssh-agent -s)";
           openssl aes-256-cbc
@@ -67,3 +100,24 @@ jobs:
           git commit -am "Update documentation ($TRAVIS_REPO_SLUG@$TRAVIS_COMMIT)";
           git push -f git@github.com:libevent/doc.git master;
         fi
+
+  autotools:
+    runs-on: ubuntu-16.04
+    strategy:
+      matrix:
+        EVENT_CONFIGURE_OPTIONS: ["","--disable-openssl","--disable-thread-support","--disable-debug-mode","--disable-malloc-replacement"]
+    steps:
+    - uses: actions/checkout@v1
+    - name: install depend
+      run: |
+        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
+    - name: build and test
+      env:
+        CC: gcc
+      shell: bash
+      run: |
+        # build and test
+        ./autogen.sh &&
+        ./configure $EVENT_CONFIGURE_OPTIONS &&
+        make &&
+        travis_wait $TIMEOUT make -j $JOBS verify;
