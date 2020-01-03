@@ -38,6 +38,21 @@ jobs:
           echo $env:PATH
           $env:PATH="$env:OPENSSL_ROOT\bin;$env:PATH"
           echo $env:PATH
+          echo ******1******
+          ls $env:OPENSSL_ROOT
+          echo ******2******
+          ls $env:OPENSSL_ROOT\bin
+          echo ******3******
+          ls C:\Program Files\Git\mingw64\bin
+          echo ******4******
+          ls C:\Program Files\Git\usr\bin
+          echo ******5******
+          ls C:\Program Files (x86)\Subversion\bin
+          echo ******6******
+          ls C:\Strawberry\c\bin
+          echo ******7******
+          ls C:\Program Files\OpenSSL\bin
+          
         }
         # build and test
         if ($env:EVENT_BUILD_METHOD -eq "autotools") {
