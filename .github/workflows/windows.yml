@@ -32,7 +32,7 @@ jobs:
         if (${{ matrix.pattern }} -eq 0) {
           $EVENT_BUILD_METHOD="cmake"
           $EVENT_CMAKE_OPTIONS=""
-          $APPVEYOR_BUILD_WORKER_IMAGE="Visual Studio 2017"
+          $APPVEYOR_BUILD_WORKER_IMAGE="Visual Studio 2019"
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
           $JOBS=1
           echo $env:PATH
@@ -41,7 +41,7 @@ jobs:
         }
         # build and test
         if ($env:EVENT_BUILD_METHOD -eq "autotools") {
-          $env:PATH="$env:MPATH;$env:OPENSSL_ROOT/bin;$env:PATH"
+          $env:PATH="$env:MPATH;$env:OPENSSL_ROOT\bin;$env:PATH"
           $env:LDFLAGS="-L$($env:OPENSSL_ROOT)/lib -L$($env:OPENSSL_ROOT)"
           $env:CFLAGS="-I$($env:OPENSSL_ROOT)/include"
           $script='
@@ -64,7 +64,7 @@ jobs:
           if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2017") {
             $env:BUILD_DIR="build-cmake"
           }
-          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Previous Visual Studio 2019") {
+          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
             $env:BUILD_DIR="build-cmake-vs2019"
           }
           md build-cmake 2> $null
