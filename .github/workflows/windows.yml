@@ -14,7 +14,7 @@ jobs:
     runs-on: windows-2016
     strategy:
       matrix:
-        pattern: [0, 1]
+        pattern: [0]
     steps:
     - uses: actions/checkout@v1
     - name: install depend
@@ -55,7 +55,8 @@ jobs:
           make verify -j $EVENT_TESTS_PARALLEL 2>&1 '
           bash -c $script
         } else {
-          $env:PATH="$env:OPENSSL_ROOT/bin;$env:PATH"
+          $env:PATH="$env:OPENSSL_ROOT/bin;$env:PATH;$env:OPENSSL_ROOT/bin"
+          echo ************************
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
           echo $env:LDFLAGS
           echo $env:CFLAGS
