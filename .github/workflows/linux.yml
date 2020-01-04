@@ -17,8 +17,8 @@ jobs:
         EVENT_CMAKE_OPTIONS: ["","-DEVENT__DISABLE_OPENSSL=ON","-DEVENT__DISABLE_THREAD_SUPPORT=ON","-DEVENT__DISABLE_DEBUG_MODE=ON","-DEVENT__DISABLE_MM_REPLACEMENT=ON"]
         include:
           - os: ubuntu-16.04
-            EVENT_CMAKE_OPTIONS: "-DEVENT__DISABLE_OPENSSL=ON"
-            compiler: clang
+            EVENT_CMAKE_OPTIONS: -DEVENT__DISABLE_OPENSSL=ON
+            TOOLS: doxygen
     steps:
     - uses: actions/checkout@v1
     - name: Cache
@@ -27,7 +27,7 @@ jobs:
         # A directory to store and save the cache
         path: build
       # An explicit key for restoring and saving the cache
-        key: ${{ runner.os }}-depends
+        key: ${{ runner.os }}-${{ matrix.EVENT_CMAKE_OPTIONS }}
     - name: install depend
       run: |
         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
@@ -74,9 +74,10 @@ jobs:
         fi
 
   autotools:
-    runs-on: ubuntu-16.04
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-16.04]
         EVENT_CONFIGURE_OPTIONS: ["","--disable-openssl","--disable-thread-support","--disable-debug-mode","--disable-malloc-replacement"]
     steps:
     - uses: actions/checkout@v1
