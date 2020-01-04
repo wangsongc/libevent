@@ -30,7 +30,7 @@ jobs:
         key: ${{ runner.os }}-${{ matrix.EVENT_CMAKE_OPTIONS }}
     - name: install depend
       run: |
-        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
+        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov doxygen
     - name: build and test
       env:
         CC: gcc
@@ -55,7 +55,7 @@ jobs:
           fi
       if: matrix.TOOLS!='doxygen'
     - name: generate doxygen
-      run: |   
+      run: | 
         mkdir -p build &&
         cd build &&
         cmake -DEVENT__DOXYGEN=ON .. &&
