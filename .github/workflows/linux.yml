@@ -40,7 +40,7 @@ jobs:
           export
           CTEST_PARALLEL_LEVEL=1
           CTEST_OUTPUT_ON_FAILURE=1;
-          mkdir build &&
+          mkdir -p build &&
           cd build &&
           pwd &&
           cmake .. ${{ matrix.EVENT_CMAKE_OPTIONS }};
@@ -62,7 +62,7 @@ jobs:
             -out .github/travis-ci-key -d;
           chmod 600 .github/travis-ci-key;
           ssh-add .github/travis-ci-key;
-          mkdir build &&
+          mkdir -p build &&
           cd build &&
           cmake -DEVENT__DOXYGEN=ON .. &&
           cmake --build . --target doxygen;
