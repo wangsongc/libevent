@@ -18,22 +18,32 @@ jobs:
           # clang
           - os: ubuntu-16.04
             # 变量定义要修改，编译器选择要修改
-            env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
+            EVENT_BUILD_METHOD: cmake
+            EVENT_CMAKE_OPTIONS: ""
             compiler: clang
           - os: ubuntu-16.04
-            env: EVENT_BUILD_METHOD=autotools EVENT_CONFIGURE_OPTIONS=""
+            EVENT_BUILD_METHOD: autotools
+            EVENT_CONFIGURE_OPTIONS: ""
             compiler: clang
           # coveralls
           - os: ubuntu-16.04
-            env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug" COVERALLS=yes
+            EVENT_BUILD_METHOD: cmake
+            EVENT_CMAKE_OPTIONS: "-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug"
+            COVERALLS: yes
           # test-export
           - os: ubuntu-16.04
-            env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON" TEST_EXPORT=STATIC
+            EVENT_BUILD_METHOD: cmake
+            EVENT_CMAKE_OPTIONS: "-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
+            TEST_EXPORT: STATIC
           - os: ubuntu-16.04
-            env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=SHARED -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON" TEST_EXPORT=SHARED
+            EVENT_BUILD_METHOD: cmake
+            EVENT_CMAKE_OPTIONS: "-DEVENT__LIBRARY_TYPE=SHARED -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
+            TEST_EXPORT: SHARED
           # for openssl1.1
           - os: ubuntu-18.04
-            env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="" OPENSSL_1_1=yes
+            EVENT_BUILD_METHOD: cmake
+            EVENT_CMAKE_OPTIONS: ""
+            OPENSSL_1_1: yes
           # deploy documentation to github pages
     steps:
     - uses: actions/checkout@v1
