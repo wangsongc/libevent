@@ -66,7 +66,7 @@ jobs:
       uses: maxheld83/ghpages@v0.2.1
       env:
         BUILD_DIR : /home/runner/work/libevent/libevent/build/doxygen/html
-        secrets: GHA_TOKEN
+        secrets: ${{ secrets.GHA_TOKEN }}
       if: matrix.TOOLS=='doxygen'
 
 #   autotools:
