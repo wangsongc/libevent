@@ -67,7 +67,7 @@ jobs:
       env:
         BUILD_DIR : /home/runner/work/libevent/libevent/build/doxygen/html
         GH_PAT: ${{ secrets.GHA_TOKEN }}
-      if: matrix.TOOLS=='doxygen'
+      if: matrix.TOOLS=='doxygen' AND repo == libevent/libevent AND branch == master AND type != pull_request
 
 #   autotools:
 #     runs-on: ${{ matrix.os }}
