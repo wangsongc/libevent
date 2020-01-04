@@ -61,13 +61,13 @@ jobs:
         cmake -DEVENT__DOXYGEN=ON .. &&
         cmake --build . --target doxygen;
         pwd
-      if: matrix.TOOLS=='doxygen'
+      if: matrix.TOOLS=='doxygen' && github.repo == 'wangsongc/libevent' && github.branch == 'master' && github.type != 'pull_request'
     - name: GitHub Pages Deploy
       uses: maxheld83/ghpages@v0.2.1
       env:
         BUILD_DIR : /home/runner/work/libevent/libevent/build/doxygen/html
         GH_PAT: ${{ secrets.GHA_TOKEN }}
-      if: matrix.TOOLS=='doxygen' && github.repo == 'libevent/libevent' && github.branch == 'master' && github.type != 'pull_request'
+      if: matrix.TOOLS=='doxygen' && github.repo == 'wangsongc/libevent' && github.branch == 'master' && github.type != 'pull_request'
 
 #   autotools:
 #     runs-on: ${{ matrix.os }}
