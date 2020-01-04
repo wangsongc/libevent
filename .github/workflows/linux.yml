@@ -56,26 +56,16 @@ jobs:
       if: matrix.TOOLS!='doxygen'
     - name: generate doxygen
       run: |   
-        eval "$(ssh-agent -s)";
-        openssl aes-256-cbc
-          -K $encrypted_82aa789583ed_key
-          -iv $encrypted_82aa789583ed_iv
-          -in .github/travis-ci-key.enc
-          -out .github/travis-ci-key -d;
-        chmod 600 .github/travis-ci-key;
-        ssh-add .github/travis-ci-key;
         mkdir -p build &&
         cd build &&
         cmake -DEVENT__DOXYGEN=ON .. &&
         cmake --build . --target doxygen;
-        cd doxygen/html;
-        git init;
-        git add -f .;
-        git commit -am "Update documentation ($TRAVIS_REPO_SLUG@$TRAVIS_COMMIT)";
-        git push -f git@github.com:libevent/doc.git master;
       if: matrix.TOOLS=='doxygen'
     - name: GitHub Pages Deploy
       uses: maxheld83/ghpages@v0.2.1
+      env:
+        BUILD_DIR : doxygen/html
+        secrets: GHA_TOKEN
       if: matrix.TOOLS=='doxygen'
 
 #   autotools:
