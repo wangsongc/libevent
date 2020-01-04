@@ -65,7 +65,7 @@ jobs:
     - name: GitHub Pages Deploy
       uses: maxheld83/ghpages@v0.2.1
       env:
-        BUILD_DIR : ../doxygen/html
+        BUILD_DIR : ./doxygen/html
         secrets: GHA_TOKEN
       if: matrix.TOOLS=='doxygen'
 
