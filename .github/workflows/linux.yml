@@ -17,6 +17,7 @@ jobs:
         include:
           # clang
           - os: ubuntu-16.04
+            # 变量定义要修改，编译器选择要修改
             env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS=""
             compiler: clang
           - os: ubuntu-16.04
@@ -34,23 +35,15 @@ jobs:
           - os: ubuntu-18.04
             env: EVENT_BUILD_METHOD=cmake EVENT_CMAKE_OPTIONS="" OPENSSL_1_1=yes
           # deploy documentation to github pages
-          - os: ubuntu-16.04
-            env: TOOL=doxygen
-            addons:
-              apt:
-                packages:
-                  - doxygen
-                  - doxygen-doc
-                  - doxygen-latex
-                  - doxygen-gui
-                  - graphviz
-                  - cmake
-            branches:
-              only:
-                - master
-            if: repo = libevent/libevent AND branch = master AND type != pull_request 
     steps:
     - uses: actions/checkout@v1
+    - name: Cache
+      uses: actions/cache@v1.0.3
+      with:
+        # A directory to store and save the cache
+        path: build
+      # An explicit key for restoring and saving the cache
+        key: ${{ runner.os }}-depends
     - name: install depend
       run: |
         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
@@ -115,4 +108,4 @@ jobs:
         ./autogen.sh &&
         ./configure $EVENT_CONFIGURE_OPTIONS &&
         make &&
-        travis_wait $TIMEOUT make -j $JOBS verify;
+        make -j $JOBS verify;
