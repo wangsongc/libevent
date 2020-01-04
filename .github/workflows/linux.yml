@@ -53,7 +53,7 @@ jobs:
           else
             cmake --build . --target verify;
           fi
-      if: matrix.TOOLS!=doxygen
+      if: matrix.TOOLS!='doxygen'
     - name: generate doxygen
       run: |   
         eval "$(ssh-agent -s)";
@@ -73,7 +73,7 @@ jobs:
         git add -f .;
         git commit -am "Update documentation ($TRAVIS_REPO_SLUG@$TRAVIS_COMMIT)";
         git push -f git@github.com:libevent/doc.git master;
-      if: matrix.TOOLS==doxygen
+      if: matrix.TOOLS=='doxygen'
 
 #   autotools:
 #     runs-on: ${{ matrix.os }}
