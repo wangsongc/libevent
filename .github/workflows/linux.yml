@@ -61,7 +61,10 @@ jobs:
         cmake -DEVENT__DOXYGEN=ON .. &&
         cmake --build . --target doxygen;
         pwd
-      if: matrix.TOOLS=='doxygen' && github.repo == 'wangsongc/libevent' && github.branch == 'master' && github.type != 'pull_request'
+        echo ${{ github.repo }}
+        echo ${{ github.branch }}
+        echo ${{ github.type }}
+#       if: matrix.TOOLS=='doxygen' && github.repo == 'wangsongc/libevent' && github.branch == 'master' && github.type != 'pull_request'
     - name: GitHub Pages Deploy
       uses: maxheld83/ghpages@v0.2.1
       env:
