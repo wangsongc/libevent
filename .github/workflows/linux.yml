@@ -74,6 +74,9 @@ jobs:
         git commit -am "Update documentation ($TRAVIS_REPO_SLUG@$TRAVIS_COMMIT)";
         git push -f git@github.com:libevent/doc.git master;
       if: matrix.TOOLS=='doxygen'
+    - name: GitHub Pages Deploy
+      uses: maxheld83/ghpages@v0.2.1
+      if: matrix.TOOLS=='doxygen'
 
 #   autotools:
 #     runs-on: ${{ matrix.os }}
