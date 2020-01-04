@@ -13,12 +13,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-16.04,ubuntu-18.04]
-        EVENT_CMAKE_OPTIONS: ["","-DEVENT__DISABLE_OPENSSL=ON","-DEVENT__DISABLE_THREAD_SUPPORT=ON","-DEVENT__DISABLE_DEBUG_MODE=ON","-DEVENT__DISABLE_MM_REPLACEMENT=ON"]
+        os: [ubuntu-16.04]
+        EVENT_CMAKE_OPTIONS: ["","-DEVENT__DISABLE_OPENSSL=ON"]
         include:
           - os: ubuntu-16.04
             EVENT_CMAKE_OPTIONS: "-DEVENT__DISABLE_OPENSSL=ON"
-            TOOLS: "doxygen"
+            TOOLS: doxygen
     steps:
     - uses: actions/checkout@v1
     - name: Cache
@@ -53,44 +53,46 @@ jobs:
           else
             cmake --build . --target verify;
           fi
-        if [ "$TOOL" == "doxygen" ]; then
-          eval "$(ssh-agent -s)";
-          openssl aes-256-cbc
-            -K $encrypted_82aa789583ed_key
-            -iv $encrypted_82aa789583ed_iv
-            -in .github/travis-ci-key.enc
-            -out .github/travis-ci-key -d;
-          chmod 600 .github/travis-ci-key;
-          ssh-add .github/travis-ci-key;
-          mkdir -p build &&
-          cd build &&
-          cmake -DEVENT__DOXYGEN=ON .. &&
-          cmake --build . --target doxygen;
-          cd doxygen/html;
-          git init;
-          git add -f .;
-          git commit -am "Update documentation ($TRAVIS_REPO_SLUG@$TRAVIS_COMMIT)";
-          git push -f git@github.com:libevent/doc.git master;
-        fi
+      if: matrix.TOOLS!=doxygen
+    - name: generate doxygen
+      run: |   
+        eval "$(ssh-agent -s)";
+        openssl aes-256-cbc
+          -K $encrypted_82aa789583ed_key
+          -iv $encrypted_82aa789583ed_iv
+          -in .github/travis-ci-key.enc
+          -out .github/travis-ci-key -d;
+        chmod 600 .github/travis-ci-key;
+        ssh-add .github/travis-ci-key;
+        mkdir -p build &&
+        cd build &&
+        cmake -DEVENT__DOXYGEN=ON .. &&
+        cmake --build . --target doxygen;
+        cd doxygen/html;
+        git init;
+        git add -f .;
+        git commit -am "Update documentation ($TRAVIS_REPO_SLUG@$TRAVIS_COMMIT)";
+        git push -f git@github.com:libevent/doc.git master;
+      if: matrix.TOOLS==doxygen
 
-  autotools:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-16.04]
-        EVENT_CONFIGURE_OPTIONS: ["","--disable-openssl","--disable-thread-support","--disable-debug-mode","--disable-malloc-replacement"]
-    steps:
-    - uses: actions/checkout@v1
-    - name: install depend
-      run: |
-        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
-    - name: build and test
-      env:
-        CC: gcc
-      shell: bash
-      run: |
-        # build and test
-        ./autogen.sh &&
-        ./configure $EVENT_CONFIGURE_OPTIONS &&
-        make &&
-        make -j $JOBS verify;
+#   autotools:
+#     runs-on: ${{ matrix.os }}
+#     strategy:
+#       matrix:
+#         os: [ubuntu-16.04]
+#         EVENT_CONFIGURE_OPTIONS: ["","--disable-openssl","--disable-thread-support","--disable-debug-mode","--disable-malloc-replacement"]
+#     steps:
+#     - uses: actions/checkout@v1
+#     - name: install depend
+#       run: |
+#         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
+#     - name: build and test
+#       env:
+#         CC: gcc
+#       shell: bash
+#       run: |
+#         # build and test
+#         ./autogen.sh &&
+#         ./configure $EVENT_CONFIGURE_OPTIONS &&
+#         make &&
+#         make -j $JOBS verify;
