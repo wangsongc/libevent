@@ -23,8 +23,8 @@ jobs:
 #             EVENT_CMAKE_OPTIONS: test-share
 #             TEST_EXPORT: SHARED           
     steps:
-    - name set matrix
-      run |
+    - name: set matrix
+      run: |
         if [${{ matrix.EVENT_MATRIX }} == 0]; then
           export
           EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
