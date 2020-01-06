@@ -55,6 +55,7 @@ jobs:
           export
             CTEST_PARALLEL_LEVEL=20
             CTEST_OUTPUT_ON_FAILURE=1;
+          echo "CTEST_PARALLEL_LEVEL:$CTEST_PARALLEL_LEVEL"
           mkdir -p build &&
           cd build &&
           pwd &&
