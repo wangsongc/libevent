@@ -14,7 +14,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-16.04]
-        EVENT_CMAKE_OPTIONS: ["","clang"]           
+        EVENT_MATRIX: ["","clang"]    
+        include:
+          - os: ubuntu-16.04   
+            EVENT_CMAKE_OPTIONS: test-static
+            TEST_EXPORT: STATIC
+          - os: ubuntu-16.04   
+            EVENT_CMAKE_OPTIONS: test-share
+            TEST_EXPORT: SHARED           
     steps:
     - uses: actions/checkout@v1
     - name: Cache
@@ -36,7 +43,7 @@ jobs:
             pwd
             export
             CC=clang
-            EVENT_CMAKE_OPTIONS="";
+            EVENT_CMAKE_OPTIONS="";          
           else
             pwd
             EVENT_CMAKE_OPTIONS=${{ matrix.EVENT_CMAKE_OPTIONS }};
