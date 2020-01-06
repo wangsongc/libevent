@@ -27,14 +27,12 @@ jobs:
       run: |
         echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
         if [${{ matrix.EVENT_MATRIX }} == 0]; then
-          export
-          EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
-          CC=clang
+          export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
+          export CC=clang
         fi
         if [${{ matrix.EVENT_MATRIX }} == 1]; then
-          export
-          EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
-          CC=gcc
+          export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
+          export CC=gcc
         fi        
 
     - uses: actions/checkout@v1
@@ -52,9 +50,8 @@ jobs:
       shell: bash
       run: |
         # build and test
-          export
-            CTEST_PARALLEL_LEVEL=20
-            CTEST_OUTPUT_ON_FAILURE=1;
+          export CTEST_PARALLEL_LEVEL=20
+          export CTEST_OUTPUT_ON_FAILURE=1
           echo "CTEST_PARALLEL_LEVEL:$CTEST_PARALLEL_LEVEL"
           mkdir -p build &&
           cd build &&
