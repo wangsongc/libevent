@@ -14,11 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-16.04]
-        EVENT_CMAKE_OPTIONS: ["","-DEVENT__DISABLE_OPENSSL=ON"]
-        include:
-          - os: ubuntu-16.04
-            EVENT_CMAKE_OPTIONS: "-DEVENT__DISABLE_OPENSSL=ON"
-            TOOLS: doxygen
+        EVENT_CMAKE_OPTIONS: ["","-DEVENT__DISABLE_OPENSSL=ON","clang"]           
     steps:
     - uses: actions/checkout@v1
     - name: Cache
@@ -30,10 +26,15 @@ jobs:
         key: ${{ runner.os }}-${{ matrix.EVENT_CMAKE_OPTIONS }}
     - name: install depend
       run: |
-        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov doxygen
-    - name: build and test
+        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
+    - name: set compiler clang
       env:
-        CC: gcc
+        CC: clang
+      shell: bash
+      run: |
+        matrix.EVENT_CMAKE_OPTIONS=""   
+      if: matrix.EVENT_CMAKE_OPTIONS="clang"
+    - name: build and test with cmake
       shell: bash
       run: |
         # build and test
@@ -53,43 +54,66 @@ jobs:
           else
             cmake --build . --target verify;
           fi
-      if: matrix.TOOLS!='doxygen'
-    - name: generate doxygen
-      run: | 
-        mkdir -p build &&
-        cd build &&
-        cmake -DEVENT__DOXYGEN=ON .. &&
-        cmake --build . --target doxygen;
-        pwd
-        echo ${{ github.repo }}
-        echo ${{ github.branch }}
-        echo ${{ github.type }}
-#       if: matrix.TOOLS=='doxygen' && github.repo == 'wangsongc/libevent' && github.branch == 'master' && github.type != 'pull_request'
-    - name: GitHub Pages Deploy
-      uses: maxheld83/ghpages@v0.2.1
+          
+  autotools:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-16.04]
+        EVENT_CONFIGURE_OPTIONS: ["","--disable-openssl","--disable-thread-support","--disable-debug-mode","--disable-malloc-replacement","clang"]
+    steps:
+    - uses: actions/checkout@v1
+    - name: install depend
+      run: |
+        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake
+    - name: set compiler clang
       env:
-        BUILD_DIR : /home/runner/work/libevent/libevent/build/doxygen/html
-        GH_PAT: ${{ secrets.GHA_TOKEN }}
-      if: matrix.TOOLS=='doxygen' && github.repo == 'wangsongc/libevent' && github.branch == 'master' && github.type != 'pull_request'
-
-#   autotools:
+        CC: clang
+      shell: bash
+      run: |
+        matrix.EVENT_CMAKE_OPTIONS=""   
+      if: matrix.EVENT_CMAKE_OPTIONS="clang"    
+    - name: build and test
+      shell: bash
+      run: |
+        ./autogen.sh &&
+        ./configure $EVENT_CONFIGURE_OPTIONS &&
+        make &&
+        make -j $JOBS verify;  
+        
+#   clang:
 #     runs-on: ${{ matrix.os }}
 #     strategy:
+#       fail-fast: false
 #       matrix:
 #         os: [ubuntu-16.04]
-#         EVENT_CONFIGURE_OPTIONS: ["","--disable-openssl","--disable-thread-support","--disable-debug-mode","--disable-malloc-replacement"]
+#         EVENT_CMAKE_OPTIONS: ["","-DEVENT__DISABLE_OPENSSL=ON"]
+#         Method: [cmake, autotools]           
 #     steps:
 #     - uses: actions/checkout@v1
+#     - name: Cache
+#       uses: actions/cache@v1.0.3
+#       with:
+#         # A directory to store and save the cache
+#         path: build
+#       # An explicit key for restoring and saving the cache
+#         key: ${{ runner.os }}-${{ matrix.compiler }}
 #     - name: install depend
 #       run: |
-#         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
+#         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake
 #     - name: build and test
 #       env:
 #         CC: gcc
 #       shell: bash
 #       run: |
 #         # build and test
-#         ./autogen.sh &&
-#         ./configure $EVENT_CONFIGURE_OPTIONS &&
-#         make &&
-#         make -j $JOBS verify;
+#           export
+#           CTEST_PARALLEL_LEVEL=1
+#           CTEST_OUTPUT_ON_FAILURE=1;
+#           mkdir -p build &&
+#           cd build &&
+#           pwd &&
+#           cmake .. ${{ matrix.EVENT_CMAKE_OPTIONS }};
+#           cmake --build . --target verify
+    
+
