@@ -32,7 +32,7 @@ jobs:
       shell: bash
       run: |
         # build and test
-          if [ ${{ matrix.EVENT_CMAKE_OPTIONS } == "clang" ]; then
+          if [ "${{ matrix.EVENT_CMAKE_OPTIONS }" == "clang" ]; then
             export
             CC=clang
             EVENT_CMAKE_OPTIONS="";
