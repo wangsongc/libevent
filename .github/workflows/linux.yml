@@ -32,7 +32,7 @@ jobs:
         CC: clang
       shell: bash
       run: |
-        ${{ matrix.EVENT_CMAKE_OPTIONS }}=""
+        ${ matrix.EVENT_CMAKE_OPTIONS }=""
       if: matrix.EVENT_CMAKE_OPTIONS=='clang'
     - name: build and test with cmake
       shell: bash
@@ -71,7 +71,7 @@ jobs:
         CC: clang
       shell: bash
       run: |
-        ${{ matrix.EVENT_CMAKE_OPTIONS }}=""
+        ${ matrix.EVENT_CMAKE_OPTIONS }=""
       if: matrix.EVENT_CMAKE_OPTIONS=='clang'  
     - name: build and test
       shell: bash
