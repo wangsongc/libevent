@@ -37,7 +37,7 @@ jobs:
             CC=clang
             EVENT_CMAKE_OPTIONS="";
           else
-            EVENT_CMAKE_OPTIONS=${{ matrix.EVENT_CMAKE_OPTIONS };
+            EVENT_CMAKE_OPTIONS=`${{ matrix.EVENT_CMAKE_OPTIONS }`;
           fi
           export
           CTEST_PARALLEL_LEVEL=1
