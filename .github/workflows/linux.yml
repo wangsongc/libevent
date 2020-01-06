@@ -15,13 +15,13 @@ jobs:
       matrix:
         os: [ubuntu-16.04]
         EVENT_MATRIX: ["","clang"]    
-        include:
-          - os: ubuntu-16.04   
-            EVENT_CMAKE_OPTIONS: test-static
-            TEST_EXPORT: STATIC
-          - os: ubuntu-16.04   
-            EVENT_CMAKE_OPTIONS: test-share
-            TEST_EXPORT: SHARED           
+#         include:
+#           - os: ubuntu-16.04   
+#             EVENT_CMAKE_OPTIONS: test-static
+#             TEST_EXPORT: STATIC
+#           - os: ubuntu-16.04   
+#             EVENT_CMAKE_OPTIONS: test-share
+#             TEST_EXPORT: SHARED           
     steps:
     - uses: actions/checkout@v1
     - name: Cache
@@ -30,7 +30,7 @@ jobs:
         # A directory to store and save the cache
         path: build
       # An explicit key for restoring and saving the cache
-        key: ${{ runner.os }}-${{ matrix.EVENT_CMAKE_OPTIONS }}
+        key: ${{ runner.os }}-${{ matrix.EVENT_MATRIX }}
     - name: install depend
       run: |
         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
@@ -39,14 +39,14 @@ jobs:
       shell: bash
       run: |
         # build and test
-          if [ ${{ matrix.EVENT_CMAKE_OPTIONS }} == "clang" ]; then
+          if [ ${{ matrix.EVENT_MATRIX }} == "clang" ]; then
             pwd
             export
             CC=clang
             EVENT_CMAKE_OPTIONS="";          
           else
             pwd
-            EVENT_CMAKE_OPTIONS=${{ matrix.EVENT_CMAKE_OPTIONS }};
+            EVENT_CMAKE_OPTIONS=${{ matrix.EVENT_MATRIX }};
           fi
           export
           CTEST_PARALLEL_LEVEL=1
