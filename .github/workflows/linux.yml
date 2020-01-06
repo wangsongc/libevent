@@ -27,24 +27,25 @@ jobs:
     - name: install depend
       run: |
         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
-    - name: set compiler clang
-      env:
-        CC: clang
-      shell: bash
-      run: |
-        $matrix.EVENT_CMAKE_OPTIONS=""
-      if: matrix.EVENT_CMAKE_OPTIONS=='clang'
+
     - name: build and test with cmake
       shell: bash
       run: |
         # build and test
+          if [ ${{ matrix.EVENT_CMAKE_OPTIONS } == "clang" ]; then
+            export
+            CC=clang
+            EVENT_CMAKE_OPTIONS="";
+          else
+            EVENT_CMAKE_OPTIONS=${{ matrix.EVENT_CMAKE_OPTIONS };
+          fi
           export
           CTEST_PARALLEL_LEVEL=1
           CTEST_OUTPUT_ON_FAILURE=1;
           mkdir -p build &&
           cd build &&
           pwd &&
-          cmake .. ${{ matrix.EVENT_CMAKE_OPTIONS }};
+          cmake .. $EVENT_CMAKE_OPTIONS;
           if [ "$TEST_EXPORT" == "STATIC" ]; then
             cmake --build .;
             sudo python3 ../test-export/test-export.py static;
@@ -55,31 +56,31 @@ jobs:
             cmake --build . --target verify;
           fi
           
-  autotools:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-16.04]
-        EVENT_CONFIGURE_OPTIONS: ["","clang"]
-    steps:
-    - uses: actions/checkout@v1
-    - name: install depend
-      run: |
-        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake
-    - name: set compiler clang
-      env:
-        CC: clang
-      shell: bash
-      run: |
-        $matrix.EVENT_CMAKE_OPTIONS=""
-      if: matrix.EVENT_CMAKE_OPTIONS=='clang'  
-    - name: build and test
-      shell: bash
-      run: |
-        ./autogen.sh &&
-        ./configure $EVENT_CONFIGURE_OPTIONS &&
-        make &&
-        make -j $JOBS verify;  
+#   autotools:
+#     runs-on: ${{ matrix.os }}
+#     strategy:
+#       matrix:
+#         os: [ubuntu-16.04]
+#         EVENT_CONFIGURE_OPTIONS: ["","clang"]
+#     steps:
+#     - uses: actions/checkout@v1
+#     - name: install depend
+#       run: |
+#         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake
+#     - name: set compiler clang
+#       env:
+#         CC: clang
+#       shell: bash
+#       run: |
+#         matrix.EVENT_CMAKE_OPTIONS=""
+#       if: matrix.EVENT_CMAKE_OPTIONS=='clang'  
+#     - name: build and test
+#       shell: bash
+#       run: |
+#         ./autogen.sh &&
+#         ./configure $EVENT_CONFIGURE_OPTIONS &&
+#         make &&
+#         make -j $JOBS verify;  
         
 #   clang:
 #     runs-on: ${{ matrix.os }}
