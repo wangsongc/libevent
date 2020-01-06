@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-16.04]
-        EVENT_CMAKE_OPTIONS: ["","-DEVENT__DISABLE_OPENSSL=ON","clang"]           
+        EVENT_CMAKE_OPTIONS: ["","clang"]           
     steps:
     - uses: actions/checkout@v1
     - name: Cache
@@ -32,7 +32,7 @@ jobs:
         CC: clang
       shell: bash
       run: |
-        matrix.EVENT_CMAKE_OPTIONS=''  
+        matrix.EVENT_CMAKE_OPTIONS=""
       if: matrix.EVENT_CMAKE_OPTIONS=='clang'
     - name: build and test with cmake
       shell: bash
@@ -60,7 +60,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-16.04]
-        EVENT_CONFIGURE_OPTIONS: ["","--disable-openssl","--disable-thread-support","--disable-debug-mode","--disable-malloc-replacement","clang"]
+        EVENT_CONFIGURE_OPTIONS: ["","clang"]
     steps:
     - uses: actions/checkout@v1
     - name: install depend
@@ -71,7 +71,7 @@ jobs:
         CC: clang
       shell: bash
       run: |
-        matrix.EVENT_CMAKE_OPTIONS=''  
+        matrix.EVENT_CMAKE_OPTIONS="" 
       if: matrix.EVENT_CMAKE_OPTIONS=='clang'  
     - name: build and test
       shell: bash
