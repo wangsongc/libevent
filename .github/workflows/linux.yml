@@ -49,7 +49,8 @@ jobs:
             EVENT_CMAKE_OPTIONS=${{ matrix.EVENT_MATRIX }};
           fi
           export
-          CTEST_PARALLEL_LEVEL=1
+          JOBS=20
+          CTEST_PARALLEL_LEVEL=$JOBS
           CTEST_OUTPUT_ON_FAILURE=1;
           mkdir -p build &&
           cd build &&
