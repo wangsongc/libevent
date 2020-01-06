@@ -53,8 +53,8 @@ jobs:
       run: |
         # build and test
           export
-          CTEST_PARALLEL_LEVEL=20
-          CTEST_OUTPUT_ON_FAILURE=1;
+            CTEST_PARALLEL_LEVEL=20
+            CTEST_OUTPUT_ON_FAILURE=1;
           mkdir -p build &&
           cd build &&
           pwd &&
