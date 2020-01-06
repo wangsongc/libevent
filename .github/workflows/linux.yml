@@ -39,6 +39,7 @@ jobs:
             EVENT_CMAKE_OPTIONS="";
           else
             pwd
+            EVENT_CMAKE_OPTIONS=${{ matrix.EVENT_CMAKE_OPTIONS }};
           fi
           export
           CTEST_PARALLEL_LEVEL=1
