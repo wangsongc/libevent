@@ -25,6 +25,7 @@ jobs:
     steps:
     - name: set matrix
       run: |
+        echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
         if [${{ matrix.EVENT_MATRIX }} == 0]; then
           export
           EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
@@ -41,7 +42,7 @@ jobs:
       uses: actions/cache@v1.0.3
       with:
         # A directory to store and save the cache
-        path: /build
+        path: $GITHUB_WORKSPACE/build
       # An explicit key for restoring and saving the cache
         key: ${{ runner.os }}-${{ matrix.EVENT_MATRIX }}
     - name: install depend
