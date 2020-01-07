@@ -101,7 +101,8 @@ jobs:
           mkdir -p build &&
           cd build &&
           pwd &&
-          cmake .. $EVENT_CMAKE_OPTIONS;
+          echo "EVENT_CMAKE_OPTIONS:$EVENT_CMAKE_OPTIONS"
+          cmake .. $EVENT_CMAKE_OPTIONS
           if ["${{ matrix.EVENT_MATRIX }}" == "TEST-EXPORT-STATIC"]; then
             cmake --build .
             sudo python3 ../test-export/test-export.py static
