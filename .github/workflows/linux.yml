@@ -27,54 +27,55 @@ jobs:
             EVENT_BUILD_METHOD: autotools
           - os: ubuntu-16.04   
             EVENT_MATRIX: TEST_EXPORT-SHARED
-            EVENT_BUILD_METHOD: autotools      
+            EVENT_BUILD_METHOD: autotools     
+
     steps:
     - name: set matrix
       run: |
         echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
-        if ["${{ matrix.EVENT_MATRIX }}" == "" && ${{ matrix.EVENT_BUILD_METHOD }} == cmake]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS=""
         else
           export EVENT_CONFIGURE_OPTIONS=""
         fi
-        if ["${{ matrix.EVENT_MATRIX }}" == "DISABLE-OPENSSL" && ${{ matrix.EVENT_BUILD_METHOD }} == cmake]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE-OPENSSL" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
         else
           export EVENT_CONFIGURE_OPTIONS="--disable-openssl"
         fi
-        if ["${{ matrix.EVENT_MATRIX }}" == "DISABLE-THREAD-SUPPORT" && ${{ matrix.EVENT_BUILD_METHOD }} == cmake]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE-THREAD-SUPPORT" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_THREAD_SUPPORT=ON"
         else
           export EVENT_CONFIGURE_OPTIONS="--disable-thread-support"
         fi
-        if ["${{ matrix.EVENT_MATRIX }}" == "DISABLE-DEBUG-MODE" && ${{ matrix.EVENT_BUILD_METHOD }} == cmake]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE-DEBUG-MODE" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_DEBUG_MODE=ON"
         else
           export EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
         fi
-        if ["${{ matrix.EVENT_MATRIX }}" == "DISABLE-MM-REPLACEMENT" && ${{ matrix.EVENT_BUILD_METHOD }} == cmake]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE-MM-REPLACEMENT" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_MM_REPLACEMENT=ON"
         else
           export EVENT_CONFIGURE_OPTIONS="--disable-malloc-replacement"
         fi
-        if ["${{ matrix.EVENT_MATRIX }}" == "COMPILER-CLANG" && ${{ matrix.EVENT_BUILD_METHOD }} == cmake]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "COMPILER-CLANG" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS=""
           export CC=clang
         else
           export EVENT_CONFIGURE_OPTIONS=""
           export CC=clang
         fi
-        if ["${{ matrix.EVENT_MATRIX }}" == "COVERALLS"]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "COVERALLS" ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug"
           export COVERALLS=yes
         fi 
-        if ["${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT-STATIC"]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT-STATIC" ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         fi 
-        if ["${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT-SHARED"]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT-SHARED" ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=SHARED -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         fi 
-        if ["${{ matrix.EVENT_MATRIX }}" == "OPENSSL-1-1"]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "OPENSSL-1-1" ]; then
           export EVENT_CMAKE_OPTIONS=""
         fi 
 
@@ -94,19 +95,18 @@ jobs:
       run: |
         # build and test
         export JOBS=20
-        if [${{ matrix.EVENT_BUILD_METHOD }} == cmake]; then
+        if [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export CTEST_PARALLEL_LEVEL=20
           export CTEST_OUTPUT_ON_FAILURE=1
           echo "CTEST_PARALLEL_LEVEL:$CTEST_PARALLEL_LEVEL"
           mkdir -p build &&
           cd build &&
           pwd &&
-          echo "EVENT_CMAKE_OPTIONS:$EVENT_CMAKE_OPTIONS"
-          cmake .. $EVENT_CMAKE_OPTIONS
-          if ["${{ matrix.EVENT_MATRIX }}" == "TEST-EXPORT-STATIC"]; then
+          cmake .. $EVENT_CMAKE_OPTIONS;
+          if [ "${{ matrix.EVENT_MATRIX }}" == "TEST-EXPORT-STATIC" ]; then
             cmake --build .
             sudo python3 ../test-export/test-export.py static
-          elif ["${{ matrix.EVENT_MATRIX }}" == "TEST-EXPORT-SHARED"]; then
+          elif [ "${{ matrix.EVENT_MATRIX }}" == "TEST-EXPORT-SHARED" ]; then
             cmake --build .
             sudo python3 ../test-export/test-export.py shared
           else
@@ -114,6 +114,7 @@ jobs:
           fi
         else
           ./autogen.sh &&
+          echo "EVENT_CONFIGURE_OPTIONS:$EVENT_CONFIGURE_OPTIONS"
           ./configure $EVENT_CONFIGURE_OPTIONS &&
           make &&
           make -j $JOBS verify
