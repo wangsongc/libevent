@@ -15,7 +15,8 @@ jobs:
       matrix:
         os: [ubuntu-16.04,ubuntu-18.04]
         EVENT_BUILD_METHOD: [cmake,autotools]
-        EVENT_MATRIX: ["","DISABLE-OPENSSL","DISABLE-THREAD-SUPPORT","DISABLE-DEBUG-MODE","DISABLE-MM-REPLACEMENT","COMPILER-CLANG","COVERALLS","TEST-EXPORT-STATIC","TEST-EXPORT-SHARED","OPENSSL-1-1"]    
+#         EVENT_MATRIX: ["","DISABLE-OPENSSL","DISABLE-THREAD-SUPPORT","DISABLE-DEBUG-MODE","DISABLE-MM-REPLACEMENT","COMPILER-CLANG","COVERALLS","TEST-EXPORT-STATIC","TEST-EXPORT-SHARED","OPENSSL-1-1"]    
+        EVENT_MATRIX: ["","COVERALLS"]
         exclude:
           - os: ubuntu-18.04   
             EVENT_BUILD_METHOD: autotools
@@ -23,10 +24,10 @@ jobs:
             EVENT_MATRIX: COVERALLS
             EVENT_BUILD_METHOD: autotools
           - os: ubuntu-16.04   
-            EVENT_MATRIX: TEST_EXPORT-STATIC
+            EVENT_MATRIX: TEST-EXPORT-STATIC
             EVENT_BUILD_METHOD: autotools
           - os: ubuntu-16.04   
-            EVENT_MATRIX: TEST_EXPORT-SHARED
+            EVENT_MATRIX: TEST-EXPORT-SHARED
             EVENT_BUILD_METHOD: autotools     
 
     steps:
@@ -120,3 +121,8 @@ jobs:
           make &&
           make -j $JOBS verify
         fi
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v1.0.1
+      with:
+        github-token: ${{ secrets.GHA_TOKEN }}
+      if: matrix.EVENT_MATRIX=='COVERALLS'
