@@ -8,7 +8,7 @@ on:
     - master
 
 jobs:
-  cmake:
+  linux:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -116,3 +116,4 @@ jobs:
           ./configure $EVENT_CONFIGURE_OPTIONS &&
           make &&
           make -j $JOBS verify
+        fi
