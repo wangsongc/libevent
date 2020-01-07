@@ -96,6 +96,9 @@ jobs:
       run: |
         # build and test
         export JOBS=20
+        if [ "${{ matrix.EVENT_MATRIX }}" == "COVERALLS" ]; then
+          pip install --user cpp-coveralls
+        fi
         if [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export CTEST_PARALLEL_LEVEL=20
           export CTEST_OUTPUT_ON_FAILURE=1
@@ -121,6 +124,17 @@ jobs:
           make &&
           make -j $JOBS verify
         fi
+        if [ "${{ matrix.EVENT_MATRIX }}" == "COVERALLS" ]; then
+          coveralls
+            --build-root .
+            --root ..
+            --exclude test
+            --exclude sample
+            --exclude cmake
+            --exclude build/CMakeFiles/CheckTypeSize
+            --exclude build/CMakeFiles/CompilerIdC
+            --gcov-options '\-lp';
+         fi
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v1.0.1
       with:
