@@ -99,6 +99,7 @@ jobs:
           export CTEST_PARALLEL_LEVEL=20
           export CTEST_OUTPUT_ON_FAILURE=1
           echo "CTEST_PARALLEL_LEVEL:$CTEST_PARALLEL_LEVEL"
+          echo "EVENT_CMAKE_OPTIONS:$EVENT_CMAKE_OPTIONS"
           mkdir -p build &&
           cd build &&
           pwd &&
