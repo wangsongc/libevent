@@ -86,7 +86,7 @@ jobs:
         # A directory to store and save the cache
         path: build
       # An explicit key for restoring and saving the cache
-        key: ${{ runner.os }}-${{ matrix.EVENT_MATRIX }}
+        key: ${{ matrix.os }}-${{ matrix.EVENT_MATRIX }}
     - name: install depend
       run: |
         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
