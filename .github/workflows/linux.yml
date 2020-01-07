@@ -128,17 +128,7 @@ jobs:
           make &&
           make -j $JOBS verify
         fi
-        if [ "${{ matrix.EVENT_MATRIX }}" == "COVERALLS" ]; then
-          coveralls
-            --build-root .
-            --root ..
-            --exclude test
-            --exclude sample
-            --exclude cmake
-            --exclude build/CMakeFiles/CheckTypeSize
-            --exclude build/CMakeFiles/CompilerIdC
-            --gcov-options '\-lp';
-         fi
+
 #     - name: Coveralls GitHub Action
 #       uses: coverallsapp/github-action@v1.0.1
 #       with:
@@ -152,3 +142,4 @@ jobs:
         wget https://codecov.io/bash -O codecov
         chmod +x codecov
         ./codecov -t $CODECOV_TOKEN -B $GITHUB_REF -s test/
+      if: matrix.EVENT_MATRIX=='COVERALLS'
