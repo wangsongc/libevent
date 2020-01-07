@@ -15,7 +15,8 @@ jobs:
       matrix:
         os: [ubuntu-16.04,ubuntu-18.04]
         EVENT_BUILD_METHOD: [cmake,autotools]
-        EVENT_MATRIX: ["","DISABLE-OPENSSL","DISABLE-THREAD-SUPPORT","DISABLE-DEBUG-MODE","DISABLE-MM-REPLACEMENT","COMPILER-CLANG","COVERALLS","TEST-EXPORT-STATIC","TEST-EXPORT-SHARED","OPENSSL-1-1"]    
+#         EVENT_MATRIX: ["","DISABLE-OPENSSL","DISABLE-THREAD-SUPPORT","DISABLE-DEBUG-MODE","DISABLE-MM-REPLACEMENT","COMPILER-CLANG","COVERALLS","TEST-EXPORT-STATIC","TEST-EXPORT-SHARED","OPENSSL-1-1"]    
+        EVENT_MATRIX: ["","COVERALLS"]
         exclude:
           - os: ubuntu-18.04   
             EVENT_BUILD_METHOD: autotools
@@ -138,8 +139,16 @@ jobs:
             --exclude build/CMakeFiles/CompilerIdC
             --gcov-options '\-lp';
          fi
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v1.0.1
-      with:
-        github-token: ${{ secrets.GHA_TOKEN }}
-      if: matrix.EVENT_MATRIX=='COVERALLS'
+#     - name: Coveralls GitHub Action
+#       uses: coverallsapp/github-action@v1.0.1
+#       with:
+#         github-token: ${{ secrets.GHA_TOKEN }}
+#       if: matrix.EVENT_MATRIX=='COVERALLS'
+    - name: Upload coverage to Codecov
+      working-directory: build
+      env:
+        CODECOV_TOKEN: ${{ secrets.GHA_TOKEN }}
+      run: |
+        wget https://codecov.io/bash -O codecov
+        chmod +x codecov
+        ./codecov -t $CODECOV_TOKEN -B $GITHUB_REF -s test/
