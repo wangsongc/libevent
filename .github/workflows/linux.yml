@@ -15,7 +15,7 @@ jobs:
       matrix:
         os: [ubuntu-16.04,ubuntu-18.04]
         EVENT_BUILD_METHOD: [cmake,autotools]
-        EVENT_MATRIX: ["",DISABLE_OPENSSL,DISABLE_THREAD_SUPPORT,DISABLE_DEBUG_MODE,DISABLE_MM_REPLACEMENT,COMPILER_CLANG,COVERALLS,TEST_EXPORT_STATIC,TEST_EXPORT_SHARED,OPENSSL_1_1]    
+        EVENT_MATRIX: ["","DISABLE-OPENSSL","DISABLE-THREAD-SUPPORT","DISABLE-DEBUG-MODE","DISABLE-MM-REPLACEMENT","COMPILER-CLANG","COVERALLS","TEST-EXPORT-STATIC","TEST-EXPORT-SHARED","OPENSSL-1-1"]    
         exclude:
           - os: ubuntu-18.04   
             EVENT_BUILD_METHOD: autotools
@@ -23,10 +23,10 @@ jobs:
             EVENT_MATRIX: COVERALLS
             EVENT_BUILD_METHOD: autotools
           - os: ubuntu-16.04   
-            EVENT_MATRIX: TEST_EXPORT_STATIC
+            EVENT_MATRIX: TEST_EXPORT-STATIC
             EVENT_BUILD_METHOD: autotools
           - os: ubuntu-16.04   
-            EVENT_MATRIX: TEST_EXPORT_SHARED
+            EVENT_MATRIX: TEST_EXPORT-SHARED
             EVENT_BUILD_METHOD: autotools      
     steps:
     - name: set matrix
@@ -37,27 +37,27 @@ jobs:
         else
           export EVENT_CONFIGURE_OPTIONS=""
         fi
-        if [${{ matrix.EVENT_MATRIX }} == "DISABLE_OPENSSL" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
+        if [${{ matrix.EVENT_MATRIX }} == "DISABLE-OPENSSL" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
         else
           export EVENT_CONFIGURE_OPTIONS="--disable-openssl"
         fi
-        if [${{ matrix.EVENT_MATRIX }} == "DISABLE_THREAD_SUPPORT" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
+        if [${{ matrix.EVENT_MATRIX }} == "DISABLE-THREAD-SUPPORT" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_THREAD_SUPPORT=ON"
         else
           export EVENT_CONFIGURE_OPTIONS="--disable-thread-support"
         fi
-        if [${{ matrix.EVENT_MATRIX }} == "DISABLE_DEBUG_MODE" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
+        if [${{ matrix.EVENT_MATRIX }} == "DISABLE-DEBUG-MODE" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_DEBUG_MODE=ON"
         else
           export EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
         fi
-        if [${{ matrix.EVENT_MATRIX }} == "DISABLE_MM_REPLACEMENT" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
+        if [${{ matrix.EVENT_MATRIX }} == "DISABLE-MM-REPLACEMENT" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_MM_REPLACEMENT=ON"
         else
           export EVENT_CONFIGURE_OPTIONS="--disable-malloc-replacement"
         fi
-        if [${{ matrix.EVENT_MATRIX }} == "COMPILER_CLANG" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
+        if [${{ matrix.EVENT_MATRIX }} == "COMPILER-CLANG" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
           export EVENT_CMAKE_OPTIONS=""
           export CC=clang
         else
@@ -68,13 +68,13 @@ jobs:
           export EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug"
           export COVERALLS=yes
         fi 
-        if [${{ matrix.EVENT_MATRIX }} == "TEST_EXPORT_STATIC"]; then
+        if [${{ matrix.EVENT_MATRIX }} == "TEST_EXPORT-STATIC"]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         fi 
-        if [${{ matrix.EVENT_MATRIX }} == "TEST_EXPORT_SHARED"]; then
+        if [${{ matrix.EVENT_MATRIX }} == "TEST_EXPORT-SHARED"]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=SHARED -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         fi 
-        if [${{ matrix.EVENT_MATRIX }} == "OPENSSL_1_1"]; then
+        if [${{ matrix.EVENT_MATRIX }} == "OPENSSL-1-1"]; then
           export EVENT_CMAKE_OPTIONS=""
         fi 
 
