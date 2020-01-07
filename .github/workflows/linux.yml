@@ -13,27 +13,70 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-16.04]
-        EVENT_MATRIX: [0,1]    
-#         include:
-#           - os: ubuntu-16.04   
-#             EVENT_CMAKE_OPTIONS: test-static
-#             TEST_EXPORT: STATIC
-#           - os: ubuntu-16.04   
-#             EVENT_CMAKE_OPTIONS: test-share
-#             TEST_EXPORT: SHARED           
+        os: [ubuntu-16.04,ubuntu-18.04]
+        EVENT_BUILD_EVENT_BUILD_EVENT_BUILD_METHOD: [cmake,autotools]
+        EVENT_MATRIX: ["","DISABLE_OPENSSL","DISABLE_THREAD_SUPPORT","DISABLE_DEBUG_MODE","DISABLE_MM_REPLACEMENT","COMPILER_CLANG","COVERALLS","TEST_EXPORT_STATIC","TEST_EXPORT_SHARED","OPENSSL_1_1"]    
+        exclude:
+          - os: ubuntu-18.04   
+            EVENT_BUILD_METHOD: autotools
+          - os: ubuntu-16.04   
+            EVENT_MATRIX: COVERALLS
+            EVENT_BUILD_METHOD: autotools
+          - os: ubuntu-16.04   
+            EVENT_MATRIX: TEST_EXPORT_STATIC
+            EVENT_BUILD_METHOD: autotools
+          - os: ubuntu-16.04   
+            EVENT_MATRIX: TEST_EXPORT_SHARED
+            EVENT_BUILD_METHOD: autotools      
     steps:
     - name: set matrix
       run: |
         echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
-        if [${{ matrix.EVENT_MATRIX }} == 0]; then
+        if [${{ matrix.EVENT_MATRIX }} == "" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
+          export EVENT_CMAKE_OPTIONS=""
+        else
+          export EVENT_CONFIGURE_OPTIONS=""
+        fi
+        if [${{ matrix.EVENT_MATRIX }} == "DISABLE_OPENSSL" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
+        else
+          export EVENT_CONFIGURE_OPTIONS="--disable-openssl"
+        fi
+        if [${{ matrix.EVENT_MATRIX }} == "DISABLE_THREAD_SUPPORT" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
+          export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_THREAD_SUPPORT=ON"
+        else
+          export EVENT_CONFIGURE_OPTIONS="--disable-thread-support"
+        fi
+        if [${{ matrix.EVENT_MATRIX }} == "DISABLE_DEBUG_MODE" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
+          export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_DEBUG_MODE=ON"
+        else
+          export EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
+        fi
+        if [${{ matrix.EVENT_MATRIX }} == "DISABLE_MM_REPLACEMENT" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
+          export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_MM_REPLACEMENT=ON"
+        else
+          export EVENT_CONFIGURE_OPTIONS="--disable-malloc-replacement"
+        fi
+        if [${{ matrix.EVENT_MATRIX }} == "COMPILER_CLANG" && ${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
+          export EVENT_CMAKE_OPTIONS=""
+          export CC=clang
+        else
+          export EVENT_CONFIGURE_OPTIONS=""
           export CC=clang
         fi
-        if [${{ matrix.EVENT_MATRIX }} == 1]; then
-          export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
-          export CC=gcc
-        fi        
+        if [${{ matrix.EVENT_MATRIX }} == "COVERALLS"]; then
+          export EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug"
+          export COVERALLS=yes
+        fi 
+        if [${{ matrix.EVENT_MATRIX }} == "TEST_EXPORT_STATIC"]; then
+          export EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
+        fi 
+        if [${{ matrix.EVENT_MATRIX }} == "TEST_EXPORT_SHARED"]; then
+          export EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=SHARED -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
+        fi 
+        if [${{ matrix.EVENT_MATRIX }} == "OPENSSL_1_1"]; then
+          export EVENT_CMAKE_OPTIONS=""
+        fi 
 
     - uses: actions/checkout@v1
     - name: Cache
@@ -50,6 +93,8 @@ jobs:
       shell: bash
       run: |
         # build and test
+        export JOBS=20
+        if [${{ matrix.EVENT_BUILD_METHOD }} == "cmake"]; then
           export CTEST_PARALLEL_LEVEL=20
           export CTEST_OUTPUT_ON_FAILURE=1
           echo "CTEST_PARALLEL_LEVEL:$CTEST_PARALLEL_LEVEL"
@@ -57,146 +102,17 @@ jobs:
           cd build &&
           pwd &&
           cmake .. $EVENT_CMAKE_OPTIONS;
-          if [ "$TEST_EXPORT" == "STATIC" ]; then
-            cmake --build .;
-            sudo python3 ../test-export/test-export.py static;
-          elif [ "$TEST_EXPORT" == "SHARED" ]; then
-            cmake --build .;
-            sudo python3 ../test-export/test-export.py shared;
+          if [ ${{ matrix.EVENT_MATRIX }} == "TEST_EXPORT_STATIC" ]; then
+            cmake --build .
+            sudo python3 ../test-export/test-export.py static
+          elif [ ${{ matrix.EVENT_MATRIX }} == "TEST_EXPORT_SHARED" ]; then
+            cmake --build .
+            sudo python3 ../test-export/test-export.py shared
           else
-            cmake --build . --target verify;
+            cmake --build . --target verify
           fi
-
-
-
-
-# name: CI on linux
-
-# on:
-#   pull_request:
-#     types: [opened, synchronize]
-#   push:
-#     branches:
-#     - master
-
-# jobs:
-#   cmake:
-#     runs-on: ${{ matrix.os }}
-#     strategy:
-#       fail-fast: false
-#       matrix:
-#         os: [ubuntu-16.04]
-#         EVENT_MATRIX: ["","clang"]    
-# #         include:
-# #           - os: ubuntu-16.04   
-# #             EVENT_CMAKE_OPTIONS: test-static
-# #             TEST_EXPORT: STATIC
-# #           - os: ubuntu-16.04   
-# #             EVENT_CMAKE_OPTIONS: test-share
-# #             TEST_EXPORT: SHARED           
-#     steps:
-#     - uses: actions/checkout@v1
-#     - name: Cache
-#       uses: actions/cache@v1.0.3
-#       with:
-#         # A directory to store and save the cache
-#         path: build
-#       # An explicit key for restoring and saving the cache
-#         key: ${{ runner.os }}-${{ matrix.EVENT_MATRIX }}
-#     - name: install depend
-#       run: |
-#         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
-
-#     - name: build and test with cmake
-#       shell: bash
-#       run: |
-#         # build and test
-#           if [ ${{ matrix.EVENT_MATRIX }} == "clang" ]; then
-#             pwd
-#             export
-#             CC=clang
-#             EVENT_CMAKE_OPTIONS="";          
-#           else
-#             pwd
-#             EVENT_CMAKE_OPTIONS=${{ matrix.EVENT_MATRIX }};
-#           fi
-#           export
-#           JOBS=20
-#           CTEST_PARALLEL_LEVEL=$JOBS
-#           CTEST_OUTPUT_ON_FAILURE=1;
-#           mkdir -p build &&
-#           cd build &&
-#           pwd &&
-#           cmake .. $EVENT_CMAKE_OPTIONS;
-#           if [ "$TEST_EXPORT" == "STATIC" ]; then
-#             cmake --build .;
-#             sudo python3 ../test-export/test-export.py static;
-#           elif [ "$TEST_EXPORT" == "SHARED" ]; then
-#             cmake --build .;
-#             sudo python3 ../test-export/test-export.py shared;
-#           else
-#             cmake --build . --target verify;
-#           fi
-          
-# #   autotools:
-# #     runs-on: ${{ matrix.os }}
-# #     strategy:
-# #       matrix:
-# #         os: [ubuntu-16.04]
-# #         EVENT_CONFIGURE_OPTIONS: ["","clang"]
-# #     steps:
-# #     - uses: actions/checkout@v1
-# #     - name: install depend
-# #       run: |
-# #         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake
-# #     - name: set compiler clang
-# #       env:
-# #         CC: clang
-# #       shell: bash
-# #       run: |
-# #         matrix.EVENT_CMAKE_OPTIONS=""
-# #       if: matrix.EVENT_CMAKE_OPTIONS=='clang'  
-# #     - name: build and test
-# #       shell: bash
-# #       run: |
-# #         ./autogen.sh &&
-# #         ./configure $EVENT_CONFIGURE_OPTIONS &&
-# #         make &&
-# #         make -j $JOBS verify;  
-        
-# #   clang:
-# #     runs-on: ${{ matrix.os }}
-# #     strategy:
-# #       fail-fast: false
-# #       matrix:
-# #         os: [ubuntu-16.04]
-# #         EVENT_CMAKE_OPTIONS: ["","-DEVENT__DISABLE_OPENSSL=ON"]
-# #         Method: [cmake, autotools]           
-# #     steps:
-# #     - uses: actions/checkout@v1
-# #     - name: Cache
-# #       uses: actions/cache@v1.0.3
-# #       with:
-# #         # A directory to store and save the cache
-# #         path: build
-# #       # An explicit key for restoring and saving the cache
-# #         key: ${{ runner.os }}-${{ matrix.compiler }}
-# #     - name: install depend
-# #       run: |
-# #         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake
-# #     - name: build and test
-# #       env:
-# #         CC: gcc
-# #       shell: bash
-# #       run: |
-# #         # build and test
-# #           export
-# #           CTEST_PARALLEL_LEVEL=1
-# #           CTEST_OUTPUT_ON_FAILURE=1;
-# #           mkdir -p build &&
-# #           cd build &&
-# #           pwd &&
-# #           cmake .. ${{ matrix.EVENT_CMAKE_OPTIONS }};
-# #           cmake --build . --target verify
-    
-
+        else
+          ./autogen.sh &&
+          ./configure $EVENT_CONFIGURE_OPTIONS &&
+          make &&
+          make -j $JOBS verify
