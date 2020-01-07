@@ -102,10 +102,10 @@ jobs:
           cd build &&
           pwd &&
           cmake .. $EVENT_CMAKE_OPTIONS;
-          if [ ${{ matrix.EVENT_MATRIX }} == "TEST_EXPORT_STATIC" ]; then
+          if [ ${{ matrix.EVENT_MATRIX }} == "TEST-EXPORT-STATIC" ]; then
             cmake --build .
             sudo python3 ../test-export/test-export.py static
-          elif [ ${{ matrix.EVENT_MATRIX }} == "TEST_EXPORT_SHARED" ]; then
+          elif [ ${{ matrix.EVENT_MATRIX }} == "TEST-EXPORT-SHARED" ]; then
             cmake --build .
             sudo python3 ../test-export/test-export.py shared
           else
