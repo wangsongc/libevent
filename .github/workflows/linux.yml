@@ -35,8 +35,21 @@ jobs:
             EVENT_MATRIX: TEST-EXPORT-SHARED
 
     steps:
-    - name: set matrix
+    - uses: actions/checkout@v1
+    - name: Cache
+      uses: actions/cache@v1.0.3
+      with:
+        # A directory to store and save the cache
+        path: build
+      # An explicit key for restoring and saving the cache
+        key: ${{ matrix.os }}-${{ matrix.EVENT_MATRIX }}
+    - name: install depend
       run: |
+        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
+    - name: build and test
+      shell: bash
+      run: |
+        #set matrix
         echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
         if [ "${{ matrix.EVENT_MATRIX }}" == "" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS=""
@@ -84,25 +97,8 @@ jobs:
         fi 
         echo "EVENT_CMAKE_OPTIONS:$EVENT_CMAKE_OPTIONS"
         echo $EVENT_CMAKE_OPTIONS
-
-    - uses: actions/checkout@v1
-    - name: Cache
-      uses: actions/cache@v1.0.3
-      with:
-        # A directory to store and save the cache
-        path: build
-      # An explicit key for restoring and saving the cache
-        key: ${{ matrix.os }}-${{ matrix.EVENT_MATRIX }}
-    - name: install depend
-      run: |
-        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
-    - name: build and test with cmake
-      run: |
-        # build and test
+        #run build and test
         export JOBS=20
-        if [ "${{ matrix.EVENT_MATRIX }}" == "COVERALLS" ]; then
-          pip install --user cpp-coveralls
-        fi
         if [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export CTEST_PARALLEL_LEVEL=20
           export CTEST_OUTPUT_ON_FAILURE=1
