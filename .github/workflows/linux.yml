@@ -83,6 +83,8 @@ jobs:
         if [ "${{ matrix.EVENT_MATRIX }}" == "OPENSSL-1-1" ]; then
           export EVENT_CMAKE_OPTIONS=""
         fi 
+        echo "EVENT_CMAKE_OPTIONS:$EVENT_CMAKE_OPTIONS"
+        echo $EVENT_CMAKE_OPTIONS
 
     - uses: actions/checkout@v1
     - name: Cache
