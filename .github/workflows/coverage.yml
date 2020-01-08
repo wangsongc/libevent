@@ -32,4 +32,4 @@ jobs:
       uses: coverallsapp/github-action@v1.0.1
       with:
         github-token: ${{ secrets.GHA_TOKEN }}
-        path-to-lcov: /build/coverage.info
+        path-to-lcov: /home/runner/work/libevent/libevent/build/coverage.info
