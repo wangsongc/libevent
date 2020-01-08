@@ -16,7 +16,7 @@ jobs:
         os: [ubuntu-16.04,ubuntu-18.04]
         EVENT_BUILD_METHOD: [cmake,autotools]
 #         EVENT_MATRIX: ["","DISABLE-OPENSSL","DISABLE-THREAD-SUPPORT","DISABLE-DEBUG-MODE","DISABLE-MM-REPLACEMENT","COMPILER-CLANG","COVERALLS","TEST-EXPORT-STATIC","TEST-EXPORT-SHARED","OPENSSL-1-1"]    
-        EVENT_MATRIX: ["","COVERALLS"]
+        EVENT_MATRIX: ["","COVERALLS","DISABLE-OPENSSL"]
         exclude:
           - os: ubuntu-18.04   
             EVENT_BUILD_METHOD: autotools
@@ -72,7 +72,6 @@ jobs:
         fi
         if [ "${{ matrix.EVENT_MATRIX }}" == "COVERALLS" ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug"
-          export COVERALLS=yes
         fi 
         if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT-STATIC" ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
@@ -113,7 +112,7 @@ jobs:
           mkdir -p build &&
           cd build &&
           pwd &&
-          cmake .. $EVENT_CMAKE_OPTIONS;
+          cmake .. $EVENT_CMAKE_OPTIONS
           if [ "${{ matrix.EVENT_MATRIX }}" == "TEST-EXPORT-STATIC" ]; then
             cmake --build .
             sudo python3 ../test-export/test-export.py static
