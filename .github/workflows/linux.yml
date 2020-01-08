@@ -15,13 +15,9 @@ jobs:
       matrix:
         os: [ubuntu-16.04,ubuntu-18.04]
         EVENT_BUILD_METHOD: [cmake,autotools]
-#         EVENT_MATRIX: ["","DISABLE-OPENSSL","DISABLE-THREAD-SUPPORT","DISABLE-DEBUG-MODE","DISABLE-MM-REPLACEMENT","COMPILER-CLANG","COVERALLS","TEST-EXPORT-STATIC","TEST-EXPORT-SHARED","OPENSSL-1-1"]    
-        EVENT_MATRIX: ["","COVERALLS","DISABLE-OPENSSL"]
+        EVENT_MATRIX: ["","DISABLE-OPENSSL","DISABLE-THREAD-SUPPORT","DISABLE-DEBUG-MODE","DISABLE-MM-REPLACEMENT","COMPILER-CLANG","TEST-EXPORT-STATIC","TEST-EXPORT-SHARED","OPENSSL-1-1"]    
         exclude:
           - os: ubuntu-18.04   
-            EVENT_BUILD_METHOD: autotools
-          - os: ubuntu-16.04   
-            EVENT_MATRIX: COVERALLS
             EVENT_BUILD_METHOD: autotools
           - os: ubuntu-16.04   
             EVENT_MATRIX: TEST-EXPORT-STATIC
@@ -29,8 +25,6 @@ jobs:
           - os: ubuntu-16.04   
             EVENT_MATRIX: TEST-EXPORT-SHARED
             EVENT_BUILD_METHOD: autotools 
-          - os: ubuntu-18.04   
-            EVENT_MATRIX: TEST-EXPORT-SHARED
           - os: ubuntu-18.04   
             EVENT_MATRIX: TEST-EXPORT-SHARED
 
@@ -45,11 +39,12 @@ jobs:
         key: ${{ matrix.os }}-${{ matrix.EVENT_MATRIX }}
     - name: install depend
       run: |
-        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake lcov
+        sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake
     - name: build and test
       shell: bash
       run: |
         #set matrix
+        openssl version
         echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
         if [ "${{ matrix.EVENT_MATRIX }}" == "" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS=""
@@ -83,9 +78,6 @@ jobs:
           export EVENT_CONFIGURE_OPTIONS=""
           export CC=clang
         fi
-        if [ "${{ matrix.EVENT_MATRIX }}" == "COVERALLS" ]; then
-          export EVENT_CMAKE_OPTIONS="-DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=debug"
-        fi 
         if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT-STATIC" ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         fi 
@@ -102,7 +94,6 @@ jobs:
         if [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export CTEST_PARALLEL_LEVEL=20
           export CTEST_OUTPUT_ON_FAILURE=1
-          echo "CTEST_PARALLEL_LEVEL:$CTEST_PARALLEL_LEVEL"
           echo "EVENT_CMAKE_OPTIONS:$EVENT_CMAKE_OPTIONS"
           mkdir -p build &&
           cd build &&
@@ -124,18 +115,3 @@ jobs:
           make &&
           make -j $JOBS verify
         fi
-
-#     - name: Coveralls GitHub Action
-#       uses: coverallsapp/github-action@v1.0.1
-#       with:
-#         github-token: ${{ secrets.GHA_TOKEN }}
-#       if: matrix.EVENT_MATRIX=='COVERALLS'
-#     - name: Upload coverage to Codecov
-#       working-directory: build
-#       env:
-#         CODECOV_TOKEN: ${{ secrets.GHA_TOKEN }}
-#       run: |
-#         wget https://codecov.io/bash -O codecov
-#         chmod +x codecov
-#         ./codecov -t $CODECOV_TOKEN -B $GITHUB_REF -s test/
-#       if: matrix.EVENT_MATRIX=='COVERALLS'
