@@ -4,7 +4,7 @@ name: doxygen
 on:
   push:
     branches:
-    - master-ok
+    - master
     - release/*
 
 jobs:
@@ -28,4 +28,4 @@ jobs:
       uses: maxheld83/ghpages@v0.2.1
       env:
         BUILD_DIR : /home/runner/work/libevent/libevent/build/doxygen/html
-        GH_PAT: ${{ secrets.GHA_TOKEN }}
+        GH_PAT: ${{ secrets.GITHUB_TOKEN }}
