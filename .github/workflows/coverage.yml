@@ -26,8 +26,9 @@ jobs:
           cmake .. -DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
           make -j $JOBS
           make verify_coverage
+          find -name coverage.info
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v1.0.1
       with:
         github-token: ${{ secrets.GHA_TOKEN }}
-        path-to-lcov: ./coverage.info
+        path-to-lcov: .build/coverage.info
