@@ -125,17 +125,17 @@ jobs:
           make -j $JOBS verify
         fi
 
-#     - name: Coveralls GitHub Action
-#       uses: coverallsapp/github-action@v1.0.1
-#       with:
-#         github-token: ${{ secrets.GHA_TOKEN }}
-#       if: matrix.EVENT_MATRIX=='COVERALLS'
-    - name: Upload coverage to Codecov
-      working-directory: build
-      env:
-        CODECOV_TOKEN: ${{ secrets.GHA_TOKEN }}
-      run: |
-        wget https://codecov.io/bash -O codecov
-        chmod +x codecov
-        ./codecov -t $CODECOV_TOKEN -B $GITHUB_REF -s test/
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v1.0.1
+      with:
+        github-token: ${{ secrets.GHA_TOKEN }}
       if: matrix.EVENT_MATRIX=='COVERALLS'
+#     - name: Upload coverage to Codecov
+#       working-directory: build
+#       env:
+#         CODECOV_TOKEN: ${{ secrets.GHA_TOKEN }}
+#       run: |
+#         wget https://codecov.io/bash -O codecov
+#         chmod +x codecov
+#         ./codecov -t $CODECOV_TOKEN -B $GITHUB_REF -s test/
+#       if: matrix.EVENT_MATRIX=='COVERALLS'
