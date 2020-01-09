@@ -1,0 +1,38 @@
+name: coverage on codecov
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+    - master
+
+jobs:
+  linux:
+    runs-on: ubuntu-16.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: install depend
+      run: |
+        sudo apt install zlib1g-dev libssl-dev build-essential cmake
+    - name: build and test
+      env:
+        CFLAGS: "-g -O0 --coverage"
+      shell: bash
+      run: |
+          export JOBS=20
+          export CTEST_PARALLEL_LEVEL=$JOBS
+          export CTEST_OUTPUT_ON_FAILURE=1
+          mkdir build
+          cd build
+          cmake .. -DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
+          cmake --build . --target verify
+          rm -rf ./CMakeFiles/*/test
+      
+    - name: Codecov
+      uses: codecov/codecov-action@v1.0.5
+      with:
+      # User defined upload name. Visible in Codecov UI
+        token: ${{ secrets.CODECOV_TOKEN }}
+      # Specify whether or not CI build should fail if Codecov runs into an error during upload
+        fail_ci_if_error: true
