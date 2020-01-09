@@ -26,8 +26,10 @@ jobs:
           - os: ubuntu-16.04   
             EVENT_MATRIX: TEST_EXPORT_SHARED
             EVENT_BUILD_METHOD: autotools 
-          # - os: ubuntu-18.04   
-          #   EVENT_MATRIX: TEST_EXPORT_SHARED
+          - os: ubuntu-18.04   
+            EVENT_MATRIX: TEST_EXPORT_STATIC
+          - os: ubuntu-18.04   
+            EVENT_MATRIX: TEST_EXPORT_SHARED
 
     steps:
     - uses: actions/checkout@v1
