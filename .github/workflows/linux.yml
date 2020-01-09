@@ -5,7 +5,8 @@ on:
     types: [opened, synchronize]
   push:
     branches:
-    - master-ok
+    - master
+    - release/*
 
 jobs:
   linux:
@@ -14,30 +15,30 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-16.04,ubuntu-18.04]
-        EVENT_BUILD_METHOD: [cmake,autotools]
-        EVENT_MATRIX: ["","DISABLE-OPENSSL","DISABLE-THREAD-SUPPORT","DISABLE-DEBUG-MODE","DISABLE-MM-REPLACEMENT","COMPILER-CLANG","TEST-EXPORT-STATIC","TEST-EXPORT-SHARED","OPENSSL-1-1"]    
+        EVENT_BUILD_METHOD: [cmake, autotools]
+        EVENT_MATRIX: ["","DISABLE_OPENSSL","DISABLE_THREAD_SUPPORT","DISABLE_DEBUG_MODE","DISABLE_MM_REPLACEMENT","COMPILER_CLANG","TEST_EXPORT_STATIC","TEST_EXPORT_SHARED","OPENSSL_1_1"]    
         exclude:
           - os: ubuntu-18.04   
             EVENT_BUILD_METHOD: autotools
           - os: ubuntu-16.04   
-            EVENT_MATRIX: TEST-EXPORT-STATIC
+            EVENT_MATRIX: TEST_EXPORT_STATIC
             EVENT_BUILD_METHOD: autotools
           - os: ubuntu-16.04   
-            EVENT_MATRIX: TEST-EXPORT-SHARED
+            EVENT_MATRIX: TEST_EXPORT_SHARED
             EVENT_BUILD_METHOD: autotools 
-          - os: ubuntu-18.04   
-            EVENT_MATRIX: TEST-EXPORT-SHARED
+          # - os: ubuntu-18.04   
+          #   EVENT_MATRIX: TEST_EXPORT_SHARED
 
     steps:
     - uses: actions/checkout@v1
     - name: Cache
       uses: actions/cache@v1.0.3
       with:
-        # A directory to store and save the cache
+      # A directory to store and save the cache
         path: build
       # An explicit key for restoring and saving the cache
         key: ${{ matrix.os }}-${{ matrix.EVENT_MATRIX }}
-    - name: install depend
+    - name: Install dependencies
       run: |
         sudo apt install zlib1g-dev libssl-dev build-essential automake autoconf cmake
     - name: build and test
@@ -51,67 +52,62 @@ jobs:
         else
           export EVENT_CONFIGURE_OPTIONS=""
         fi
-        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE-OPENSSL" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE_OPENSSL" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
         else
           export EVENT_CONFIGURE_OPTIONS="--disable-openssl"
         fi
-        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE-THREAD-SUPPORT" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE_THREAD_SUPPORT" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_THREAD_SUPPORT=ON"
         else
           export EVENT_CONFIGURE_OPTIONS="--disable-thread-support"
         fi
-        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE-DEBUG-MODE" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE_DEBUG_MODE" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_DEBUG_MODE=ON"
         else
           export EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
         fi
-        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE-MM-REPLACEMENT" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE_MM_REPLACEMENT" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_MM_REPLACEMENT=ON"
         else
           export EVENT_CONFIGURE_OPTIONS="--disable-malloc-replacement"
         fi
-        if [ "${{ matrix.EVENT_MATRIX }}" == "COMPILER-CLANG" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "COMPILER_CLANG" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export EVENT_CMAKE_OPTIONS=""
           export CC=clang
         else
           export EVENT_CONFIGURE_OPTIONS=""
           export CC=clang
         fi
-        if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT-STATIC" ]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT_STATIC" ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         fi 
-        if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT-SHARED" ]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT_SHARED" ]; then
           export EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=SHARED -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         fi 
-        if [ "${{ matrix.EVENT_MATRIX }}" == "OPENSSL-1-1" ]; then
+        if [ "${{ matrix.EVENT_MATRIX }}" == "OPENSSL_1_1" ]; then
           export EVENT_CMAKE_OPTIONS=""
         fi 
-        echo "EVENT_CMAKE_OPTIONS:$EVENT_CMAKE_OPTIONS"
-        echo $EVENT_CMAKE_OPTIONS
         #run build and test
         export JOBS=20
         if [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ]; then
           export CTEST_PARALLEL_LEVEL=20
           export CTEST_OUTPUT_ON_FAILURE=1
-          echo "EVENT_CMAKE_OPTIONS:$EVENT_CMAKE_OPTIONS"
-          mkdir -p build &&
-          cd build &&
-          pwd &&
+          mkdir -p build
+          cd build
           cmake .. $EVENT_CMAKE_OPTIONS
-          if [ "${{ matrix.EVENT_MATRIX }}" == "TEST-EXPORT-STATIC" ]; then
+          if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT_STATIC" ]; then
             cmake --build .
             sudo python3 ../test-export/test-export.py static
-          elif [ "${{ matrix.EVENT_MATRIX }}" == "TEST-EXPORT-SHARED" ]; then
+          elif [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT_SHARED" ]; then
             cmake --build .
             sudo python3 ../test-export/test-export.py shared
           else
             cmake --build . --target verify
           fi
         else
-          ./autogen.sh &&
-          echo "EVENT_CONFIGURE_OPTIONS:$EVENT_CONFIGURE_OPTIONS"
-          ./configure $EVENT_CONFIGURE_OPTIONS &&
-          make &&
+          ./autogen.sh
+          ./configure $EVENT_CONFIGURE_OPTIONS
+          make
           make -j $JOBS verify
         fi
