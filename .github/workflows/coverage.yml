@@ -26,27 +26,18 @@ jobs:
           cmake .. -DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
           make -j $JOBS
           make verify_coverage
-          find -name coverage.info
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v1.0.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: /home/runner/work/libevent/libevent/build/coverage.info
         
-    - name: Upload coverage to Codecov
-      working-directory: build
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      run: |
-        wget https://codecov.io/bash -O codecov
-        chmod +x codecov
-        ./codecov -t $CODECOV_TOKEN -B $GITHUB_REF -s CMakeFiles/
     - name: Codecov
       uses: codecov/codecov-action@v1.0.5
       with:
       # User defined upload name. Visible in Codecov UI
         token: ${{ secrets.CODECOV_TOKEN }}
       # Path to coverage file to upload
-        file: CMakeFiles/
+        file: ./CMakeFiles
       # Specify whether or not CI build should fail if Codecov runs into an error during upload
         fail_ci_if_error: true
