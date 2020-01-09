@@ -30,8 +30,7 @@ jobs:
           echo "****befor****"
           find ./CMakeFiles/*/test
           rm -rf ./CMakeFiles/*/test
-          echo "****after****"
-          find ./CMakeFiles/*/test      
+          echo "****after****"    
     - name: Codecov
       uses: codecov/codecov-action@v1.0.5
       with:
