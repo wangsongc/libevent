@@ -28,6 +28,9 @@ jobs:
           cmake .. -DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
           make -j $JOBS
           make verify_coverage
+    - name: clean test cov
+      shell: bash
+      run: find ./CMakeFiles -maxdepth 2 -name test -exec rm -rf {} \;
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v1.0.1
       with:
