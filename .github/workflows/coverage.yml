@@ -1,4 +1,4 @@
-name: coverage on linux
+name: coverage
 
 on:
   pull_request:
@@ -21,18 +21,17 @@ jobs:
           export JOBS=20
           export CTEST_PARALLEL_LEVEL=$JOBS
           export CTEST_OUTPUT_ON_FAILURE=1
-          mkdir build &&
-          cd build &&
+          mkdir build
+          cd build
           cmake .. -DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
           make -j $JOBS
           make verify_coverage
-          pwd
           find -name coverage.info
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v1.0.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: /home/runner/work/libevent/libevent/build/coverage.info
+        path-to-lcov: ./coverage.info
         
     - name: Upload coverage to Codecov
       working-directory: build
