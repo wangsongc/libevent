@@ -26,7 +26,7 @@ jobs:
           mkdir build
           cd build
           cmake .. -DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
-          cmake --build . --target verify
+          make -j20
           echo "****befor****"
           find ./CMakeFiles/*/test
           rm -rf ./CMakeFiles/*/test
