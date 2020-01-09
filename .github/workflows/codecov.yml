@@ -26,11 +26,12 @@ jobs:
           mkdir build
           cd build
           cmake .. -DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
-          make -j20
+          cmake --build . --target verify       
           echo "****befor****"
           find ./CMakeFiles/*/test
           rm -rf ./CMakeFiles/*/test
-          echo "****after****"    
+          echo "****after****"
+          find / -name *.gcno 
     - name: Codecov
       uses: codecov/codecov-action@v1.0.5
       with:
