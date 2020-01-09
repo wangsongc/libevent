@@ -27,8 +27,11 @@ jobs:
           cd build
           cmake .. -DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
           cmake --build . --target verify
+          echo "****befor****"
+          find ./CMakeFiles/*/test
           rm -rf ./CMakeFiles/*/test
-      
+          echo "****after****"
+          find ./CMakeFiles/*/test      
     - name: Codecov
       uses: codecov/codecov-action@v1.0.5
       with:
