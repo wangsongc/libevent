@@ -1,0 +1,34 @@
+name: coverage
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+    - master
+    - release/*
+
+jobs:
+  linux:
+    runs-on: ubuntu-16.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: install depend
+      run: |
+        sudo apt install zlib1g-dev libssl-dev build-essential cmake lcov
+    - name: build and test
+      shell: bash
+      run: |
+          export JOBS=20
+          export CTEST_PARALLEL_LEVEL=$JOBS
+          export CTEST_OUTPUT_ON_FAILURE=1
+          mkdir build
+          cd build
+          cmake .. -DEVENT__COVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
+          make -j $JOBS
+          make verify_coverage
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v1.0.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: /home/runner/work/libevent/libevent/build/coverage.info.cleaned
