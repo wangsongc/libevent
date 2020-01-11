@@ -39,7 +39,7 @@ jobs:
         } Else {
             $env:SHARED="no-shared no-makedepend"
         }
-        for /r 'C:\Program Files (x86)\Microsoft Visual Studio\2017' %i in (vcvarsall.bat) do @echo %i
+        for /r 'C:\Program Files (x86)\Microsoft Visual Studio\2017' %%i in (vcvarsall.bat) do @echo %%i
         
         mkdir _build
         cd _build
