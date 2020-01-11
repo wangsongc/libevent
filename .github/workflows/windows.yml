@@ -37,11 +37,11 @@ jobs:
       run: |
         # matrix config
         if (${{ matrix.pattern }} -eq 0) {
-          $EVENT_BUILD_METHOD="cmake"
-          $EVENT_CMAKE_OPTIONS=""
-          $APPVEYOR_BUILD_WORKER_IMAGE="Visual Studio 2019"
+          $env:EVENT_BUILD_METHOD="cmake"
+          $env:EVENT_CMAKE_OPTIONS=""
+          $env:APPVEYOR_BUILD_WORKER_IMAGE="Visual Studio 2019"
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
-          $JOBS=1         
+          $env:JOBS=1         
         }
         # build and test
         if ($env:EVENT_BUILD_METHOD -eq "autotools") {
