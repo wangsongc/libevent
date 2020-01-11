@@ -28,8 +28,8 @@ jobs:
       run: |
     - name: build and test
       env:
-        OPENSSL_ROOT: C:\Program Files\Git\mingw64
-        OPENSSL_ROOT_DIR: C:\Program Files\Git\mingw64
+        OPENSSL_ROOT: C:\Program Files (x86)\Subversion
+        OPENSSL_ROOT_DIR: C:\Program Files (x86)\Subversion
         PYTHON3: C:/Python37-x64/python.exe
         MPATH: C:/mingw-w64/x86_64-7.2.0-posix-seh-rt_v5-rev1/mingw64/bin;C:/msys64/usr/bin
         EVENT_TESTS_PARALLEL: 1
