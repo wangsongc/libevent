@@ -27,7 +27,7 @@ jobs:
     - name: found openssl
       shell: cmd
       run: |
-        for /r c:\ %i in (libssl.*lib,libcrypto.*lib) do @echo %i
+        for /r c:\ %%i in (libssl.*lib,libcrypto.*lib) do @echo %%i
     - name: build and test
       env:
         OPENSSL_USE_STATIC_LIBS: TRUE
