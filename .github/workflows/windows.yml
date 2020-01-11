@@ -39,7 +39,8 @@ jobs:
         } Else {
             $env:SHARED="no-shared no-makedepend"
         }
-
+        for /r 'C:\Program Files (x86)\Microsoft Visual Studio\2017' %i in (vcvarsall.bat) do @echo %i
+        
         mkdir _build
         cd _build
         perl ..\Configure %TARGET% %SHARED%
@@ -50,7 +51,7 @@ jobs:
             -or (&git log -2 | Select-String "\[extended tests\]") ) {
             $env:EXTENDED_TESTS="yes"
         }
-
+      
         cd _build
         If ($env:Configuration -Match "shared" -or $env:EXTENDED_TESTS) {
             cmd /c "nmake build_all_generated 2>&1"
