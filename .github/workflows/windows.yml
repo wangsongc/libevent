@@ -36,6 +36,7 @@ jobs:
         EVENT_BUILD_PARALLEL: 10  
       shell: powershell
       run: |
+        ls -R C:\Program Files\OpenSSL\lib
         # matrix config
         if (${{ matrix.pattern }} -eq 0) {
           $env:EVENT_BUILD_METHOD="cmake"
