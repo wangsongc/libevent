@@ -45,7 +45,7 @@ jobs:
           $env:JOBS=1         
         }
         # build and test
-          $env:PATH="$env:OPENSSL_ROOT/bin;$env:PATH"
+          $env:PATH="$env:OPENSSL_ROOT\bin;$env:PATH"
           echo ************************
           echo $env:PATH
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
