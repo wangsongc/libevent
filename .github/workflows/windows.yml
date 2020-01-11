@@ -24,6 +24,10 @@ jobs:
         python-version: 3.x
     # The target architecture (x86, x64) of the Python interpreter.
         architecture: x64
+    - name: openssl
+      shell: cmd
+      run: |
+       for /r "C:\Program Files (x86)\Microsoft Visual Studio\2017" %%i in (vcvarsall.bat) do @echo %%i 
     - name: install openssl
       shell: powershell
       run: | 
@@ -42,9 +46,7 @@ jobs:
             $env:SHARED="no-makedepend"
         } Else {
             $env:SHARED="no-shared no-makedepend"
-        }
-        $env:VS="C:\Program Files (x86)\Microsoft Visual Studio\2017"
-        for /r $env:VS %%i in (vcvarsall.bat) do @echo %%i
+        }      
         
         mkdir _build
         cd _build
