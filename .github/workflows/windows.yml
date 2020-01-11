@@ -28,7 +28,7 @@ jobs:
       run: |
     - name: build and test
       env:
-        OPENSSL_ROOT: C:/Program Files/OpenSSL
+        OPENSSL_ROOT: C:\Program Files\OpenSSL
         PYTHON3: C:/Python37-x64/python.exe
         MPATH: C:/mingw-w64/x86_64-7.2.0-posix-seh-rt_v5-rev1/mingw64/bin;C:/msys64/usr/bin
         EVENT_TESTS_PARALLEL: 1
@@ -62,7 +62,7 @@ jobs:
           bash -c $script
         } else {
           echo ************************
-          $env:PATH="$env:OPENSSL_ROOT/bin;$env:PATH"
+          $env:PATH="$env:OPENSSL_ROOT\bin;$env:PATH"
           echo $env:PATH
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
           if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2017") {
