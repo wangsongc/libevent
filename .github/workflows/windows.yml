@@ -54,4 +54,6 @@ jobs:
           echo "OPENSSL_CRYPTO_LIBRARY:$env:OPENSSL_CRYPTO_LIBRARY"
           md build
           cd build
-          $env:cmake_cmd="cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS"
+          cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS    
+          cmake --build . -j $env:EVENT_BUILD_PARALLEL -- /nologo /verbosity:minimal
+          ctest --output-on-failure -j $env:EVENT_TESTS_PARALLEL      
