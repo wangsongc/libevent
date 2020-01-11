@@ -28,10 +28,10 @@ jobs:
       run: |
     - name: build and test
       env:
-        OPENSSL_ROOT: 'C:\Program Files\OpenSSL'
-        OPENSSL_ROOT_DIR: 'C:\Program Files\OpenSSL'
-        PYTHON3: C:/Python37-x64/python.exe
-        MPATH: C:/mingw-w64/x86_64-7.2.0-posix-seh-rt_v5-rev1/mingw64/bin;C:/msys64/usr/bin
+#         OPENSSL_ROOT: 'C:\Program Files\OpenSSL'
+#         OPENSSL_ROOT_DIR: 'C:\Program Files\OpenSSL'
+#         PYTHON3: C:/Python37-x64/python.exe
+#         MPATH: C:/mingw-w64/x86_64-7.2.0-posix-seh-rt_v5-rev1/mingw64/bin;C:/msys64/usr/bin
         EVENT_TESTS_PARALLEL: 1
         EVENT_BUILD_PARALLEL: 10  
       shell: powershell
@@ -46,7 +46,6 @@ jobs:
         }
         # build and test
           echo ************************
-          $env:PATH="$env:OPENSSL_ROOT\bin;$env:PATH"
           echo $env:PATH
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
           echo "OPENSSL_ROOT\bin:$env:OPENSSL_ROOT\bin"
@@ -54,6 +53,9 @@ jobs:
           echo "OPENSSL_CRYPTO_LIBRARY:$env:OPENSSL_CRYPTO_LIBRARY"
           md build
           cd build
-          cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS    
+          if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+          cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS  
+          if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }  
           cmake --build . -j $env:EVENT_BUILD_PARALLEL -- /nologo /verbosity:minimal
+          if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           ctest --output-on-failure -j $env:EVENT_TESTS_PARALLEL      
