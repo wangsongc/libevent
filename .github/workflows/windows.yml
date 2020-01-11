@@ -60,11 +60,15 @@ jobs:
           [[ $? -ne 0 ]] && exit 1
           make verify -j $EVENT_TESTS_PARALLEL 2>&1 '
           bash -c $script
-        } else {
+        } 
+        if ($env:EVENT_BUILD_METHOD -eq "cmake") {
           echo ************************
           $env:PATH="$env:OPENSSL_ROOT\bin;$env:PATH"
           echo $env:PATH
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
+          echo "OPENSSL_ROOT\bin:$env:OPENSSL_ROOT\bin"
+          echo "OPENSSL_ROOT_DIR:$env:OPENSSL_ROOT_DIR"
+          echo "OPENSSL_CRYPTO_LIBRARY:$env:OPENSSL_CRYPTO_LIBRARY"
           if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2017") {
             $env:BUILD_DIR="build-cmake"
           }
