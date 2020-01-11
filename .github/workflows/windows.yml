@@ -24,6 +24,10 @@ jobs:
         python-version: 3.x
     # The target architecture (x86, x64) of the Python interpreter.
         architecture: x64
+    - name: found openssl
+      shell: cmd
+      run: 
+        for /r c:\ %i in (libssl.*lib,libcrypto.*lib) do echo %i
     - name: install depend
       run: |
     - name: build and test
