@@ -4,7 +4,7 @@ name: doxygen
 on:
   push:
     branches:
-    - master
+    - master-ok
     - release/*
 
 jobs:
