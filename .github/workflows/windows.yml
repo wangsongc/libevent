@@ -28,10 +28,11 @@ jobs:
       run: |
     - name: build and test
       env:
-#         OPENSSL_ROOT: 'C:\Program Files\OpenSSL'
-#         OPENSSL_ROOT_DIR: 'C:\Program Files\OpenSSL'
-#         PYTHON3: C:/Python37-x64/python.exe
-#         MPATH: C:/mingw-w64/x86_64-7.2.0-posix-seh-rt_v5-rev1/mingw64/bin;C:/msys64/usr/bin
+        OPENSSL_USE_STATIC_LIBS: TRUE
+        OPENSSL_ROOT: 'C:\Program Files\OpenSSL'
+        OPENSSL_ROOT_DIR: 'C:\Program Files\OpenSSL'
+        PYTHON3: C:/Python37-x64/python.exe
+        MPATH: C:/mingw-w64/x86_64-7.2.0-posix-seh-rt_v5-rev1/mingw64/bin;C:/msys64/usr/bin
         EVENT_TESTS_PARALLEL: 1
         EVENT_BUILD_PARALLEL: 10  
       shell: powershell
@@ -45,6 +46,7 @@ jobs:
           $env:JOBS=1         
         }
         # build and test
+          $env:PATH="$env:OPENSSL_ROOT/bin;$env:PATH"
           echo ************************
           echo $env:PATH
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
