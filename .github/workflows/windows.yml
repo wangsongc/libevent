@@ -17,11 +17,18 @@ jobs:
         pattern: [0]
     steps:
     - uses: actions/checkout@v1
+    - name: Setup Python environment
+      uses: actions/setup-python@v1.1.1
+      with:
+    # Version range or exact version of a Python version to use, using semvers version range syntax.
+        python-version: 3.x
+    # The target architecture (x86, x64) of the Python interpreter.
+        architecture: x64
     - name: install depend
       run: |
     - name: build and test
       env:
-        OPENSSL_ROOT_DIR: C:/Strawberry/c
+        key: C:\Program Files\OpenSSL\bin\openssl.exe
         OPENSSL_ROOT: C:/Strawberry/c
         PYTHON3: C:/Python37-x64/python.exe
         MPATH: C:/mingw-w64/x86_64-7.2.0-posix-seh-rt_v5-rev1/mingw64/bin;C:/msys64/usr/bin
@@ -62,6 +69,7 @@ jobs:
           bash -c $script
         } else {
           echo ************************
+          $env:PATH="$env:OPENSSL_ROOT/bin;$env:PATH"
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
           if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2017") {
             $env:BUILD_DIR="build-cmake"
@@ -77,9 +85,9 @@ jobs:
           cmake --build . -j $env:EVENT_BUILD_PARALLEL -- /nologo /verbosity:minimal
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           if ($env:TEST_EXPORT -eq 'STATIC') {
-            &$env:PYTHON3 ../test-export/test-export.py static
+            python ../test-export/test-export.py static
           } elseif ($env:TEST_EXPORT -eq 'SHARED') {
-            &$env:PYTHON3 ../test-export/test-export.py shared
+            python ../test-export/test-export.py shared
           } else {
             ctest --output-on-failure -j $env:EVENT_TESTS_PARALLEL
           }
