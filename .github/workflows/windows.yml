@@ -39,7 +39,7 @@ jobs:
         } Else {
             $env:SHARED="no-shared no-makedepend"
         }
-        $env:VSCOMNTOOLS=(Get-Content ("env:VS" + "$env:VSVER" + "0COMNTOOLS"))
+        $env:VSCOMNTOOLS=(Get-Content ("env:VS" + "17" + "0COMNTOOLS"))
         call "%VSCOMNTOOLS%\..\..\VC\vcvarsall.bat" %VCVARS_PLATFORM%
         mkdir _build
         cd _build
