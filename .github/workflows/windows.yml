@@ -45,7 +45,6 @@ jobs:
           $env:JOBS=1         
         }
         # build and test
-        if ($env:EVENT_BUILD_METHOD -eq "cmake") {
           echo ************************
           $env:PATH="$env:OPENSSL_ROOT\bin;$env:PATH"
           echo $env:PATH
@@ -53,4 +52,3 @@ jobs:
           echo "OPENSSL_ROOT\bin:$env:OPENSSL_ROOT\bin"
           echo "OPENSSL_ROOT_DIR:$env:OPENSSL_ROOT_DIR"
           echo "OPENSSL_CRYPTO_LIBRARY:$env:OPENSSL_CRYPTO_LIBRARY"
-        }
