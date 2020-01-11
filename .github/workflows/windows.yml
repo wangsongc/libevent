@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize]
   push:
     branches:
-    - master11
+    - gha-1
     tags:
     - '*'
 
