@@ -27,6 +27,10 @@ jobs:
     - name: install openssl
       shell: powershell
       run: | 
+        wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1c.zip -O openssl_1_1c.zip
+        unzip -q openssl_1_1c.zip
+        cd openssl_1_1c
+        
         If ($env:Platform -Match "x86") {
             $env:VCVARS_PLATFORM="x86"
             $env:TARGET="VC-WIN32 no-asm --strict-warnings"
@@ -39,7 +43,7 @@ jobs:
         } Else {
             $env:SHARED="no-shared no-makedepend"
         }
-        for /r 'C:\Program Files (x86)\Microsoft Visual Studio\2017' %%i in (vcvarsall.bat) do @echo %%i
+        for /r "C:\Program Files (x86)\Microsoft Visual Studio\2017" %%i in (vcvarsall.bat) do @echo %%i
         
         mkdir _build
         cd _build
