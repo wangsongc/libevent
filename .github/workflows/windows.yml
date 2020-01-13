@@ -32,8 +32,17 @@ jobs:
       shell: powershell
       run: | 
         Invoke-WebRequest -Uri https://github.com/openssl/openssl/archive/OpenSSL_1_1_1c.zip -OutFile openssl_1_1c.zip
+        echo "****1****"
+        pwd
+        dir
         7z x openssl_1_1c.zip
+        echo "****2****"
+        pwd
+        dir
         cd openssl_1_1c
+        echo "****3****"
+        pwd
+        dir
         mkdir _build
         cd _build
         
