@@ -24,22 +24,22 @@ jobs:
         python-version: 3.x
     # The target architecture (x86, x64) of the Python interpreter.
         architecture: x64
-    - name: openssl
-      shell: cmd
-      run: |
-       for /r "C:\Program Files (x86)\Microsoft Visual Studio\2017" %%i in (vcvarsall.bat) do @echo %%i 
+#     - name: openssl
+#       shell: cmd
+#       run: |
+#        for /r "C:\Program Files (x86)\Microsoft Visual Studio\2017" %%i in (vcvarsall.bat) do @echo %%i 
     - name: install openssl
       shell: powershell
       run: | 
-        Invoke-WebRequest -Uri https://github.com/openssl/openssl/archive/OpenSSL_1_1_1c.zip -OutFile openssl_1_1c.zip
+        Invoke-WebRequest -Uri https://github.com/openssl/openssl/archive/OpenSSL_1_1_1c.zip
         echo "****1****"
         pwd
         dir
-        7z x openssl_1_1c.zip
+        7z x openssl-OpenSSL_1_1_1c.zip
         echo "****2****"
         pwd
         dir
-        cd openssl_1_1c
+        cd openssl-OpenSSL_1_1_1c
         echo "****3****"
         pwd
         dir
