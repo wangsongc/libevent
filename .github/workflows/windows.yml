@@ -31,11 +31,11 @@ jobs:
     - name: install openssl
       shell: powershell
       run: | 
-        Invoke-WebRequest -Uri https://github.com/openssl/openssl/archive/OpenSSL_1_1_1c.zip
+        Invoke-WebRequest -Uri https://github.com/openssl/openssl/archive/OpenSSL_1_1_1c.zip -OutFile openssl-1.1.1c.zip
         echo "****1****"
         pwd
         dir
-        7z x openssl-OpenSSL_1_1_1c.zip
+        7z x openssl-1.1.1c.zip
         echo "****2****"
         pwd
         dir
