@@ -32,7 +32,9 @@ jobs:
       shell: powershell
       run: | 
        vcpkg search openssl
+       vcpkg install openssl
        echo "VCPKG_INSTALLATION_ROOT: $env:VCPKG_INSTALLATION_ROOT"
+       ls $env:VCPKG_INSTALLATION_ROOT
     - name: build and test
       env:
         OPENSSL_USE_STATIC_LIBS: TRUE
