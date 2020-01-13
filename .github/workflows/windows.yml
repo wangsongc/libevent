@@ -33,18 +33,12 @@ jobs:
       run: | 
         Invoke-WebRequest -Uri https://github.com/openssl/openssl/archive/OpenSSL_1_1_1c.zip -OutFile openssl-1.1.1c.zip
         echo "****1****"
-        pwd
-        dir
+
         7z x openssl-1.1.1c.zip
         echo "****2****"
-        pwd
-        dir
+
         cd openssl-OpenSSL_1_1_1c
         echo "****3****"
-        pwd
-        dir
-        mkdir _build
-        cd _build
         
         If ($env:Platform -Match "x86") {
             $env:VCVARS_PLATFORM="x86"
@@ -57,9 +51,11 @@ jobs:
             $env:SHARED="no-makedepend"
         } Else {
             $env:SHARED="no-shared no-makedepend"
-        }      
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2017\vcvarsall.bat" %VCVARS_PLATFORM%
-
+        } 
+        $env:VSCOMNTOOLS=(Get-Content ("env:VS" + "$env:VSVER" + "0COMNTOOLS"))
+        call "%VSCOMNTOOLS%\..\..\VC\vcvarsall.bat" %VCVARS_PLATFORM%   
+        mkdir _build
+        cd _build
         perl ..\Configure %TARGET% %SHARED%
         perl configdata.pm --dump
         cd ..
