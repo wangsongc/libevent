@@ -31,47 +31,8 @@ jobs:
     - name: install openssl
       shell: powershell
       run: | 
-        Invoke-WebRequest -Uri https://github.com/openssl/openssl/archive/OpenSSL_1_1_1c.zip -OutFile openssl-1.1.1c.zip
-        echo "****1****"
-
-        7z x openssl-1.1.1c.zip
-        echo "****2****"
-
-        cd openssl-OpenSSL_1_1_1c
-        echo "****3****"
-        
-        If ($env:Platform -Match "x86") {
-            $env:VCVARS_PLATFORM="x86"
-            $env:TARGET="VC-WIN32 no-asm --strict-warnings"
-        } Else {
-            $env:VCVARS_PLATFORM="amd64"
-            $env:TARGET="VC-WIN64A-masm"
-        }
-        If ($env:Configuration -Match "shared") {
-            $env:SHARED="no-makedepend"
-        } Else {
-            $env:SHARED="no-shared no-makedepend"
-        } 
-        $env:VSCOMNTOOLS=(Get-Content ("env:VS" + "17" + "0COMNTOOLS"))
-        call "%VSCOMNTOOLS%\..\..\VC\vcvarsall.bat" %VCVARS_PLATFORM%   
-        mkdir _build
-        cd _build
-        perl ..\Configure %TARGET% %SHARED%
-        perl configdata.pm --dump
-        cd ..
-
-        if (-not $env:APPVEYOR_PULL_REQUEST_NUMBER`
-            -or (&git log -2 | Select-String "\[extended tests\]") ) {
-            $env:EXTENDED_TESTS="yes"
-        }
-      
-        If ($env:Configuration -Match "shared" -or $env:EXTENDED_TESTS) {
-            cmd /c "nmake build_all_generated 2>&1"
-            cmd /c "nmake PERL=no-perl 2>&1"
-        }
-        cd ..
-        mkdir ..\openssl_install
-        cmd /c "nmake install DESTDIR=..\openssl_install 2>&1"
+       vcpkg search openssl
+       echo "VCPKG_INSTALLATION_ROOT: $env:VCPKG_INSTALLATION_ROOT"
     - name: build and test
       env:
         OPENSSL_USE_STATIC_LIBS: TRUE
