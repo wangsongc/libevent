@@ -28,18 +28,24 @@ jobs:
 #       shell: cmd
 #       run: |
 #        for /r "C:\Program Files (x86)\Microsoft Visual Studio\2017" %%i in (vcvarsall.bat) do @echo %%i 
+    - name: Cache
+      uses: actions/cache@v1.1.0
+      with:
+    # A directory to store and save the cache
+        path: C:\vcpkg
+        key: ${{ matrix.pattern }}
     - name: install openssl
       shell: powershell
       run: | 
        vcpkg search openssl
-       vcpkg install openssl
+       vcpkg install openssl:x64-windows
        echo "VCPKG_INSTALLATION_ROOT: $env:VCPKG_INSTALLATION_ROOT"
        ls $env:VCPKG_INSTALLATION_ROOT
     - name: build and test
       env:
         OPENSSL_USE_STATIC_LIBS: TRUE
         OPENSSL_ROOT: 'C:\Program Files\OpenSSL'
-        OPENSSL_ROOT_DIR: 'C:\Program Files\OpenSSL'
+        OPENSSL_ROOT_DIR: $env:VCPKG_INSTALLATION_ROOT\installed\x64-windows
         MPATH: C:\Program Files\Git\mingw64\bin
         EVENT_TESTS_PARALLEL: 1
         EVENT_BUILD_PARALLEL: 10  
@@ -56,7 +62,6 @@ jobs:
           $env:JOBS=1         
         }
         # build and test
-          $env:PATH="$env:OPENSSL_ROOT\bin;$env:PATH"
           echo ************************
           echo $env:PATH
           echo $env:APPVEYOR_BUILD_WORKER_IMAGE
