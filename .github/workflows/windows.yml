@@ -10,37 +10,86 @@ on:
     - '*'
 
 jobs:
-  windows:
+  windows2016:
     runs-on: windows-2016
     strategy:
       matrix:
-        pattern: [0]
+        EVENT_BUILD_METHOD: [cmake, autotools]
+        EVENT_MATRIX: ["","LIBRARY_TYPE_STATIC","DISABLE_OPENSSL","DISABLE_THREAD_SUPPORT","DISABLE_DEBUG_MODE","DISABLE_MM_REPLACEMENT","DUNICODE","TEST_EXPORT_SHARED","TEST_EXPORT_STATIC"]    
+        exclude:
+          - EVENT_BUILD_METHOD: autotools 
+            EVENT_MATRIX: TEST_EXPORT_STATIC
+          - EVENT_BUILD_METHOD: autotools 
+            EVENT_MATRIX: TEST_EXPORT_SHARED
+          - EVENT_BUILD_METHOD: autotools 
+            EVENT_MATRIX: DUNICODE
+          - EVENT_BUILD_METHOD: autotools 
+            EVENT_MATRIX: LIBRARY_TYPE_STATIC
+
     steps:
+    - name: build and test
+      shell: bash
+      run: |
+        #set matrix
+        openssl version
+        echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
+        if [ "${{ matrix.EVENT_MATRIX }}" == "" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+          export EVENT_CMAKE_OPTIONS=""
+        } else {
+          export EVENT_CONFIGURE_OPTIONS=""
+        }
+        if [ "${{ matrix.EVENT_MATRIX }}" == "LIBRARY_TYPE_STATIC" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+          export EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC"
+        }
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE_OPENSSL" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+          export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
+        } else {
+          export EVENT_CONFIGURE_OPTIONS="--disable-openssl"
+        }
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE_THREAD_SUPPORT" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+          export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_THREAD_SUPPORT=ON"
+        } else {
+          export EVENT_CONFIGURE_OPTIONS="--disable-thread-support"
+        }
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE_DEBUG_MODE" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+          export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_DEBUG_MODE=ON"
+        } else {
+          export EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
+        }
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE_MM_REPLACEMENT" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+          export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_MM_REPLACEMENT=ON"
+        } else {
+          export EVENT_CONFIGURE_OPTIONS="--disable-malloc-replacement"
+        }
+        if [ "${{ matrix.EVENT_MATRIX }}" == "DUNICODE" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+          export EVENT_CMAKE_OPTIONS="-DCMAKE_C_FLAGS='-DUNICODE -D_UNICODE'"
+        }
+        if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT_SHARED" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+          export EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
+        }
+        if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT_STATIC" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+          export EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
+        }
     - uses: actions/checkout@v1
     - name: Setup Python environment
       uses: actions/setup-python@v1.1.1
       with:
-    # Version range or exact version of a Python version to use, using semvers version range syntax.
         python-version: 3.x
-    # The target architecture (x86, x64) of the Python interpreter.
         architecture: x64
-#     - name: openssl
-#       shell: cmd
-#       run: |
-#        for /r "C:\Program Files (x86)\Microsoft Visual Studio\2017" %%i in (vcvarsall.bat) do @echo %%i 
+
     - name: cache openssl
       id: cache-openssl
       uses: actions/cache@v1.1.0
       with:
-    # A directory to store and save the cache
         path: C:\vcpkg\installed
         key: ${{ matrix.pattern }}
+
     - name: cache build
       uses: actions/cache@v1.1.0
       with:
-    # A directory to store and save the cache
         path: build
         key: build-${{ matrix.pattern }}
+
     - name: install openssl
       shell: powershell
       run: | 
@@ -49,38 +98,64 @@ jobs:
        echo "VCPKG_INSTALLATION_ROOT: $env:VCPKG_INSTALLATION_ROOT"
        ls $env:VCPKG_INSTALLATION_ROOT
       if: steps.cache-openssl.outputs.cache-hit != 'true'
+      
     - name: build and test
       env:
-        OPENSSL_USE_STATIC_LIBS: TRUE
-        OPENSSL_ROOT: C:\vcpkg\installed\x64-windows
         OPENSSL_ROOT_DIR: C:\vcpkg\installed\x64-windows
         MPATH: C:\Program Files\Git\mingw64\bin
         EVENT_TESTS_PARALLEL: 1
         EVENT_BUILD_PARALLEL: 10 
       shell: powershell
       run: |
-        ls $env:OPENSSL_ROOT
-        ls -R $env:OPENSSL_ROOT\lib
-        # matrix config
-        if (${{ matrix.pattern }} -eq 0) {
-          $env:EVENT_BUILD_METHOD="cmake"
-          $env:EVENT_CMAKE_OPTIONS=""
-          $env:APPVEYOR_BUILD_WORKER_IMAGE="Visual Studio 2019"
-          echo $env:APPVEYOR_BUILD_WORKER_IMAGE
-          $env:JOBS=1         
-        }
-        # build and test
-          echo ************************
-          echo $env:PATH
-          echo $env:APPVEYOR_BUILD_WORKER_IMAGE
-          echo "OPENSSL_ROOT\bin:$env:OPENSSL_ROOT\bin"
-          echo "OPENSSL_ROOT_DIR:$env:OPENSSL_ROOT_DIR"
-          echo "OPENSSL_CRYPTO_LIBRARY:$env:OPENSSL_CRYPTO_LIBRARY"
-          md build
-          cd build
+        if ($env:EVENT_BUILD_METHOD -eq 'autotools') {
+          $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
+          $env:LDFLAGS="-L$($env:OPENSSL_ROOT_DIR)/lib -L$($env:OPENSSL_ROOT_DIR)"
+          $env:CFLAGS="-I$($env:OPENSSL_ROOT_DIR)/include"
+
+          $script='
+          ./autogen.sh 2>&1 3>&1
+          [[ $? -ne 0 ]] && exit 1
+
+          mkdir build-autotools 2>/dev/null
+          cd build-autotools
+          [[ $? -ne 0 ]] && exit 1
+
+          ../configure $EVENT_CONFIGURE_OPTIONS 2>&1
+          [[ $? -ne 0 ]] && exit 1
+          make -j $EVENT_BUILD_PARALLEL 2>&1
+          [[ $? -ne 0 ]] && exit 1
+          make verify -j $EVENT_TESTS_PARALLEL 2>&1 '
+
+          bash -c $script
+
+        } else {
+          $env:PATH="$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
+          if (${{ matrix.pattern }} -eq 'Visual Studio 2017') {
+            $env:BUILD_DIR="build-cmake"
+          }
+          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Previous Visual Studio 2019') {
+            $env:BUILD_DIR="build-cmake-vs2019"
+          }
+          md $env:BUILD_DIR 2> $null
+          cd $env:BUILD_DIR
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-          cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS  
-          if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }  
+          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2017') {
+            $env:cmake_cmd="cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS"
+          }
+          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Previous Visual Studio 2019') {
+            $env:cmake_cmd="cmake -G 'Visual Studio 16 2019' -A x64 .. $env:EVENT_CMAKE_OPTIONS"
+          }
+          Invoke-Expression $env:cmake_cmd
+          if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           cmake --build . -j $env:EVENT_BUILD_PARALLEL -- /nologo /verbosity:minimal
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-          ctest --output-on-failure -j $env:EVENT_TESTS_PARALLEL      
+          if ($env:TEST_EXPORT -eq 'STATIC') {
+            python ../test-export/test-export.py static
+          } elseif ($env:TEST_EXPORT -eq 'SHARED') {
+            python ../test-export/test-export.py shared
+          } else {
+            ctest --output-on-failure -j $env:EVENT_TESTS_PARALLEL
+          }
+        }
+        ls $env:OPENSSL_ROOT
+        ls -R $env:OPENSSL_ROOT\lib
