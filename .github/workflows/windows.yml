@@ -138,16 +138,15 @@ jobs:
           cd $env:BUILD_DIR
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           if (${{ matrix.os }} -eq windows-2016) {
-            $env:cmake_cmd="cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS"
+            cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS
           }
           if (${{ matrix.os }} -eq windows-2019) {
-            $env:cmake_cmd="cmake -G 'Visual Studio 16 2019' -A x64 .. $env:EVENT_CMAKE_OPTIONS"
+            cmake -G 'Visual Studio 16 2019' -A x64 .. $env:EVENT_CMAKE_OPTIONS
           }
-          Invoke-Expression $env:cmake_cmd
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           cmake --build . -j $env:EVENT_BUILD_PARALLEL -- /nologo /verbosity:minimal
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-          if ($env:TEST_EXPORT -eq 'STATIC') {
+          if ("${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_STATIC") {
             python ../test-export/test-export.py static
           } elseif ("${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_SHARED") {
             python ../test-export/test-export.py shared
