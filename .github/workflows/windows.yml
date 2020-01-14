@@ -39,13 +39,13 @@ jobs:
       uses: actions/cache@v1.1.0
       with:
         path: C:\vcpkg\installed
-        key: ${{ matrix.pattern }}
+        key: ${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
 
     - name: cache build
       uses: actions/cache@v1.1.0
       with:
         path: build
-        key: build-${{ matrix.pattern }}
+        key: build-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
 
     - name: install openssl
       shell: powershell
