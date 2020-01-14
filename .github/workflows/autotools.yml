@@ -48,12 +48,12 @@ jobs:
       if: steps.cache-openssl.outputs.cache-hit != 'true'
 
     - name: Setup Msys2 environment
-      uses: numworks/setup-msys2@v1
+    - uses: numworks/setup-msys2@v1
       with: 
     # Variant of the environment to set by default: MSYS, MINGW32 or MINGW64
         msystem: MINGW64
-    - run: msys2do makepkg-mingw -sCLfc --noconfirm --noprogressbar
-    - run: msys2do pacman --noconfirm -U mingw-w64-*-any.pkg.tar.xz
+#     - run: msys2do pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-freetype mingw-w64-x86_64-pkg-config make mingw-w64-x86_64-python3 mingw-w64-x86_64-libjpeg-turbo mingw-w64-x86_64-libpng
+    - run: msys2do pacman -S --noconfirm autoconf automake msys/libtool make mingw-w64-i686-gcc
     - run: |
         set MSYSTEM=MINGW64
         msys2do ./autogen.sh
