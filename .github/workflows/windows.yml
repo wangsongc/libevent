@@ -26,11 +26,44 @@ jobs:
           - EVENT_BUILD_METHOD: autotools 
             EVENT_MATRIX: LIBRARY_TYPE_STATIC
 
-    steps:
-    - name: set matrix
+    steps:      
+    - uses: actions/checkout@v1
+    - name: Setup Python environment
+      uses: actions/setup-python@v1.1.1
+      with:
+        python-version: 3.x
+        architecture: x64
+
+    - name: cache openssl
+      id: cache-openssl
+      uses: actions/cache@v1.1.0
+      with:
+        path: C:\vcpkg\installed
+        key: ${{ matrix.pattern }}
+
+    - name: cache build
+      uses: actions/cache@v1.1.0
+      with:
+        path: build
+        key: build-${{ matrix.pattern }}
+
+    - name: install openssl
+      shell: powershell
+      run: | 
+       vcpkg search openssl
+       vcpkg install openssl:x64-windows
+       echo "VCPKG_INSTALLATION_ROOT: $env:VCPKG_INSTALLATION_ROOT"
+       ls $env:VCPKG_INSTALLATION_ROOT
+      if: steps.cache-openssl.outputs.cache-hit != 'true'
+      
+    - name: build and test
+      env:
+        OPENSSL_ROOT_DIR: C:\vcpkg\installed\x64-windows
+        MPATH: C:\Program Files\Git\mingw64\bin
+        EVENT_TESTS_PARALLEL: 1
+        EVENT_BUILD_PARALLEL: 10 
       shell: powershell
       run: |
-        #set matrix
         openssl version
         echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
@@ -70,43 +103,6 @@ jobs:
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_STATIC" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
           $EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         }
-    - uses: actions/checkout@v1
-    - name: Setup Python environment
-      uses: actions/setup-python@v1.1.1
-      with:
-        python-version: 3.x
-        architecture: x64
-
-    - name: cache openssl
-      id: cache-openssl
-      uses: actions/cache@v1.1.0
-      with:
-        path: C:\vcpkg\installed
-        key: ${{ matrix.pattern }}
-
-    - name: cache build
-      uses: actions/cache@v1.1.0
-      with:
-        path: build
-        key: build-${{ matrix.pattern }}
-
-    - name: install openssl
-      shell: powershell
-      run: | 
-       vcpkg search openssl
-       vcpkg install openssl:x64-windows
-       echo "VCPKG_INSTALLATION_ROOT: $env:VCPKG_INSTALLATION_ROOT"
-       ls $env:VCPKG_INSTALLATION_ROOT
-      if: steps.cache-openssl.outputs.cache-hit != 'true'
-      
-    - name: build and test
-      env:
-        OPENSSL_ROOT_DIR: C:\vcpkg\installed\x64-windows
-        MPATH: C:\Program Files\Git\mingw64\bin
-        EVENT_TESTS_PARALLEL: 1
-        EVENT_BUILD_PARALLEL: 10 
-      shell: powershell
-      run: |
         if ($env:EVENT_BUILD_METHOD -eq 'autotools') {
           $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
           $env:LDFLAGS="-L$($env:OPENSSL_ROOT_DIR)/lib -L$($env:OPENSSL_ROOT_DIR)"
