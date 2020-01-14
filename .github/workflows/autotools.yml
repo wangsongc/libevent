@@ -47,7 +47,6 @@ jobs:
        ls $env:VCPKG_INSTALLATION_ROOT
       if: steps.cache-openssl.outputs.cache-hit != 'true'
 
-    - name: Setup Msys2 environment
     - uses: numworks/setup-msys2@v1
       with: 
     # Variant of the environment to set by default: MSYS, MINGW32 or MINGW64
