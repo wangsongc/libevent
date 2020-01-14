@@ -35,7 +35,7 @@ jobs:
         echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
           $EVENT_CMAKE_OPTIONS=""
-        } elif {
+        } else {
           $EVENT_CONFIGURE_OPTIONS=""
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "LIBRARY_TYPE_STATIC" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
@@ -43,22 +43,22 @@ jobs:
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_OPENSSL" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
           $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
-        } elif {
+        } else {
           $EVENT_CONFIGURE_OPTIONS="--disable-openssl"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_THREAD_SUPPORT" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
           $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_THREAD_SUPPORT=ON"
-        } elif {
+        } else {
           $EVENT_CONFIGURE_OPTIONS="--disable-thread-support"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_DEBUG_MODE" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
           $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_DEBUG_MODE=ON"
-        } elif {
+        } else {
           $EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_MM_REPLACEMENT" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
           $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_MM_REPLACEMENT=ON"
-        } elif {
+        } else {
           $EVENT_CONFIGURE_OPTIONS="--disable-malloc-replacement"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "DUNICODE" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
