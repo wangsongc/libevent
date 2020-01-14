@@ -52,10 +52,16 @@ jobs:
     # Variant of the environment to set by default: MSYS, MINGW32 or MINGW64
         msystem: MINGW64
 #     - run: msys2do pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-freetype mingw-w64-x86_64-pkg-config make mingw-w64-x86_64-python3 mingw-w64-x86_64-libjpeg-turbo mingw-w64-x86_64-libpng
-    - run: msys2do pacman -S --noconfirm autoconf automake msys/libtool make mingw-w64-i686-gcc
-    - run: |
+    - name: build
+      shell: bash
+      run: |
+        msys2do pacman -S --noconfirm autoconf automake msys/libtool make mingw-w64-i686-gcc
         set MSYSTEM=MINGW64
-        msys2do ./autogen.sh && mkdir build-autotools && cd build-autotools && ../configure $EVENT_CONFIGURE_OPTIONS && make verify -j10
+        ./autogen.sh 
+        mkdir build-autotools 
+        cd build-autotools 
+        ../configure $EVENT_CONFIGURE_OPTIONS
+        make verify -j10
         
     - name: build and test
       env:
