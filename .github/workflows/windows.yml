@@ -13,6 +13,7 @@ jobs:
   windows2016:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [windows-2016]
         EVENT_BUILD_METHOD: [cmake, autotools]
@@ -146,8 +147,7 @@ jobs:
           } elseif ("${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_SHARED") {
             python ../test-export/test-export.py shared
           } else {
+            pwd
             ctest --output-on-failure -j $env:EVENT_TESTS_PARALLEL
           }
         }
-        ls $env:OPENSSL_ROOT
-        ls -R $env:OPENSSL_ROOT\lib
