@@ -25,6 +25,7 @@ jobs:
             EVENT_MATRIX: DUNICODE
           - EVENT_BUILD_METHOD: autotools 
             EVENT_MATRIX: LIBRARY_TYPE_STATIC
+          - EVENT_BUILD_METHOD: autotools 
 
     steps:      
     - uses: actions/checkout@v1
