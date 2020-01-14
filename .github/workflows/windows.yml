@@ -17,17 +17,8 @@ jobs:
       matrix:
         os: [windows-2016]
         EVENT_BUILD_METHOD: [cmake, autotools]
-        EVENT_MATRIX: ["","LIBRARY_TYPE_STATIC","DISABLE_OPENSSL","DISABLE_THREAD_SUPPORT","DISABLE_DEBUG_MODE","DISABLE_MM_REPLACEMENT","DUNICODE","TEST_EXPORT_SHARED","TEST_EXPORT_STATIC"]    
-        exclude:
-          - EVENT_BUILD_METHOD: autotools 
-            EVENT_MATRIX: TEST_EXPORT_STATIC
-          - EVENT_BUILD_METHOD: autotools 
-            EVENT_MATRIX: TEST_EXPORT_SHARED
-          - EVENT_BUILD_METHOD: autotools 
-            EVENT_MATRIX: DUNICODE
-          - EVENT_BUILD_METHOD: autotools 
-            EVENT_MATRIX: LIBRARY_TYPE_STATIC
-          - EVENT_BUILD_METHOD: autotools 
+        EVENT_MATRIX: [""]    
+
 
     steps:      
     - uses: actions/checkout@v1
@@ -69,43 +60,12 @@ jobs:
       run: |
         openssl version
         echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
-        if (( "${{ matrix.EVENT_MATRIX }}" -eq "" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
+        if (( "${{ matrix.EVENT_MATRIX }}" -eq "" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
           $EVENT_CMAKE_OPTIONS=""
         } else {
           $EVENT_CONFIGURE_OPTIONS=""
         }
-        if (( "${{ matrix.EVENT_MATRIX }}" -eq "LIBRARY_TYPE_STATIC" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC"
-        }
-        if (( "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_OPENSSL" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
-        } else {
-          $EVENT_CONFIGURE_OPTIONS="--disable-openssl"
-        }
-        if (( "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_THREAD_SUPPORT" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_THREAD_SUPPORT=ON"
-        } else {
-          $EVENT_CONFIGURE_OPTIONS="--disable-thread-support"
-        }
-        if (( "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_DEBUG_MODE" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_DEBUG_MODE=ON"
-        } else {
-          $EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
-        }
-        if (( "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_MM_REPLACEMENT" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_MM_REPLACEMENT=ON"
-        } else {
-          $EVENT_CONFIGURE_OPTIONS="--disable-malloc-replacement"
-        }
-        if (( "${{ matrix.EVENT_MATRIX }}" -eq "DUNICODE" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
-          $EVENT_CMAKE_OPTIONS="-DCMAKE_C_FLAGS='-DUNICODE -D_UNICODE'"
-        }
-        if (( "${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_SHARED" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
-        }
-        if (( "${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_STATIC" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
-        }
+       
         if ($env:EVENT_BUILD_METHOD -eq 'autotools') {
           $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
           $env:LDFLAGS="-L$($env:OPENSSL_ROOT_DIR)/lib -L$($env:OPENSSL_ROOT_DIR)"
@@ -134,13 +94,12 @@ jobs:
           cd build
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           if ("${{ matrix.os }}" -eq "windows-2016") {
-            cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS
+            pwd
           }
           if ("${{ matrix.os }}" -eq "windows-2019") {
-            cmake -G 'Visual Studio 16 2019' -A x64 .. $env:EVENT_CMAKE_OPTIONS
+            pwd
           }
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-          cmake --build . -j $env:EVENT_BUILD_PARALLEL -- /nologo /verbosity:minimal
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           if ("${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_STATIC") {
             python ../test-export/test-export.py static
@@ -148,6 +107,5 @@ jobs:
             python ../test-export/test-export.py shared
           } else {
             pwd
-            ctest --output-on-failure -j $env:EVENT_TESTS_PARALLEL
           }
         }
