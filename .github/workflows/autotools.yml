@@ -55,11 +55,7 @@ jobs:
     - run: msys2do pacman -S --noconfirm autoconf automake msys/libtool make mingw-w64-i686-gcc
     - run: |
         set MSYSTEM=MINGW64
-        msys2do ./autogen.sh
-        msys2do mkdir build-autotools
-        msys2do cd build-autotools
-        msys2do ../configure $EVENT_CONFIGURE_OPTIONS
-        msys2do make verify -j10
+        msys2do ./autogen.sh && mkdir build-autotools && cd build-autotools && ../configure $EVENT_CONFIGURE_OPTIONS && make verify -j10
         
     - name: build and test
       env:
