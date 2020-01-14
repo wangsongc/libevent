@@ -52,6 +52,15 @@ jobs:
       with: 
     # Variant of the environment to set by default: MSYS, MINGW32 or MINGW64
         msystem: MINGW64
+    - run: msys2do makepkg-mingw -sCLfc --noconfirm --noprogressbar
+    - run: msys2do pacman --noconfirm -U mingw-w64-*-any.pkg.tar.xz
+    - run: |
+        set MSYSTEM=MINGW64
+        msys2do ./autogen.sh
+        msys2do mkdir build-autotools
+        msys2do cd build-autotools
+        msys2do ../configure $EVENT_CONFIGURE_OPTIONS
+        msys2do make verify -j10
         
     - name: build and test
       env:
@@ -84,5 +93,5 @@ jobs:
           make -j $EVENT_BUILD_PARALLEL 2>&1
           [[ $? -ne 0 ]] && exit 1
           make verify -j $EVENT_TESTS_PARALLEL 2>&1 '
-          bash -c $script
+          msys2do -c $script
         } 
