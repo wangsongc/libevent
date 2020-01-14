@@ -27,7 +27,7 @@ jobs:
             EVENT_MATRIX: LIBRARY_TYPE_STATIC
 
     steps:
-    - name: build and test
+    - name: set matrix
       shell: powershell
       run: |
         #set matrix
