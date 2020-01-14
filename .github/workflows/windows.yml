@@ -11,9 +11,10 @@ on:
 
 jobs:
   windows2016:
-    runs-on: windows-2016
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [windows-2016]
         EVENT_BUILD_METHOD: [cmake, autotools]
         EVENT_MATRIX: ["","LIBRARY_TYPE_STATIC","DISABLE_OPENSSL","DISABLE_THREAD_SUPPORT","DISABLE_DEBUG_MODE","DISABLE_MM_REPLACEMENT","DUNICODE","TEST_EXPORT_SHARED","TEST_EXPORT_STATIC"]    
         exclude:
@@ -127,19 +128,19 @@ jobs:
 
         } else {
           $env:PATH="$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
-          if (${{ matrix.pattern }} -eq 'Visual Studio 2017') {
-            $env:BUILD_DIR="build-cmake"
+          if (${{ matrix.os }} -eq windows-2016) {
+            $env:BUILD_DIR="build"
           }
-          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Previous Visual Studio 2019') {
-            $env:BUILD_DIR="build-cmake-vs2019"
+          if (${{ matrix.os }} -eq windows-2019) {
+            $env:BUILD_DIR="build"
           }
           md $env:BUILD_DIR 2> $null
           cd $env:BUILD_DIR
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2017') {
+          if (${{ matrix.os }} -eq windows-2016) {
             $env:cmake_cmd="cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS"
           }
-          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Previous Visual Studio 2019') {
+          if (${{ matrix.os }} -eq windows-2019) {
             $env:cmake_cmd="cmake -G 'Visual Studio 16 2019' -A x64 .. $env:EVENT_CMAKE_OPTIONS"
           }
           Invoke-Expression $env:cmake_cmd
@@ -148,7 +149,7 @@ jobs:
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           if ($env:TEST_EXPORT -eq 'STATIC') {
             python ../test-export/test-export.py static
-          } elseif ($env:TEST_EXPORT -eq 'SHARED') {
+          } elseif ("${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_SHARED") {
             python ../test-export/test-export.py shared
           } else {
             ctest --output-on-failure -j $env:EVENT_TESTS_PARALLEL
