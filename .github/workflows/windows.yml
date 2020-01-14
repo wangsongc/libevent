@@ -33,41 +33,41 @@ jobs:
         #set matrix
         openssl version
         echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
-        if [ "${{ matrix.EVENT_MATRIX }}" == "" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+        if [ "${{ matrix.EVENT_MATRIX }}" -eq "" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake ] {
           $EVENT_CMAKE_OPTIONS=""
         } elif {
           $EVENT_CONFIGURE_OPTIONS=""
         }
-        if [ "${{ matrix.EVENT_MATRIX }}" == "LIBRARY_TYPE_STATIC" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+        if [ "${{ matrix.EVENT_MATRIX }}" -eq "LIBRARY_TYPE_STATIC" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake ] {
           $EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC"
         }
-        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE_OPENSSL" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+        if [ "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_OPENSSL" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake ] {
           $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
         } elif {
           $EVENT_CONFIGURE_OPTIONS="--disable-openssl"
         }
-        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE_THREAD_SUPPORT" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+        if [ "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_THREAD_SUPPORT" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake ] {
           $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_THREAD_SUPPORT=ON"
         } elif {
           $EVENT_CONFIGURE_OPTIONS="--disable-thread-support"
         }
-        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE_DEBUG_MODE" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+        if [ "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_DEBUG_MODE" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake ] {
           $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_DEBUG_MODE=ON"
         } elif {
           $EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
         }
-        if [ "${{ matrix.EVENT_MATRIX }}" == "DISABLE_MM_REPLACEMENT" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+        if [ "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_MM_REPLACEMENT" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake ] {
           $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_MM_REPLACEMENT=ON"
         } elif {
           $EVENT_CONFIGURE_OPTIONS="--disable-malloc-replacement"
         }
-        if [ "${{ matrix.EVENT_MATRIX }}" == "DUNICODE" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+        if [ "${{ matrix.EVENT_MATRIX }}" -eq "DUNICODE" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake ] {
           $EVENT_CMAKE_OPTIONS="-DCMAKE_C_FLAGS='-DUNICODE -D_UNICODE'"
         }
-        if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT_SHARED" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+        if [ "${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_SHARED" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake ] {
           $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         }
-        if [ "${{ matrix.EVENT_MATRIX }}" == "TEST_EXPORT_STATIC" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} == cmake ] {
+        if [ "${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_STATIC" ] && [ ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake ] {
           $EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         }
     - uses: actions/checkout@v1
