@@ -51,17 +51,15 @@ jobs:
       with: 
     # Variant of the environment to set by default: MSYS, MINGW32 or MINGW64
         msystem: MINGW64
-#     - run: msys2do pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-freetype mingw-w64-x86_64-pkg-config make mingw-w64-x86_64-python3 mingw-w64-x86_64-libjpeg-turbo mingw-w64-x86_64-libpng
-    - name: build
-      shell: bash
-      run: |
-        msys2do pacman -S --noconfirm autoconf automake msys/libtool make mingw-w64-i686-gcc
-        set MSYSTEM=MINGW64
-        ./autogen.sh 
-        mkdir build-autotools 
-        cd build-autotools 
-        ../configure $EVENT_CONFIGURE_OPTIONS
-        make verify -j10
+    - run: |
+          msys2do pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-freetype mingw-w64-x86_64-pkg-config make mingw-w64-x86_64-python3 mingw-w64-x86_64-libjpeg-turbo mingw-w64-x86_64-libpng
+          msys2do set MSYSTEM=MINGW64
+          msys2do pwd
+          msys2do ./autogen.sh 
+          msys2do mkdir build-autotools 
+          msys2do cd build-autotools 
+          msys2do ../configure $EVENT_CONFIGURE_OPTIONS
+          make verify -j10
         
     - name: build and test
       env:
@@ -72,7 +70,7 @@ jobs:
       shell: powershell
       run: |
         openssl version
-        echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
+        echo "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
         ls -R $env:OPENSSL_ROOT\lib
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
           $EVENT_CMAKE_OPTIONS=""
