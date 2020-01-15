@@ -104,7 +104,7 @@ jobs:
           $env:EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_STATIC" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
-          $env:EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
+          $env:EVENT_CMAKE_OPTIONS=" -DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         }
         if ($env:EVENT_BUILD_METHOD -eq 'autotools') {
           $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
