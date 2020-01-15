@@ -70,41 +70,41 @@ jobs:
         openssl version
         echo "GITHUB_WORKSPACE:$GITHUB_WORKSPACE"
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
-          $EVENT_CMAKE_OPTIONS=""
+          $env:EVENT_CMAKE_OPTIONS=""
         } else {
-          $EVENT_CONFIGURE_OPTIONS=""
+          $env:EVENT_CONFIGURE_OPTIONS=""
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "LIBRARY_TYPE_STATIC" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC"
+          $env:EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_OPENSSL" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
+          $env:EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_OPENSSL=ON"
         } else {
-          $EVENT_CONFIGURE_OPTIONS="--disable-openssl"
+          $env:EVENT_CONFIGURE_OPTIONS="--disable-openssl"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_THREAD_SUPPORT" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_THREAD_SUPPORT=ON"
+          $env:EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_THREAD_SUPPORT=ON"
         } else {
-          $EVENT_CONFIGURE_OPTIONS="--disable-thread-support"
+          $env:EVENT_CONFIGURE_OPTIONS="--disable-thread-support"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_DEBUG_MODE" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_DEBUG_MODE=ON"
+          $env:EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_DEBUG_MODE=ON"
         } else {
-          $EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
+          $env:EVENT_CONFIGURE_OPTIONS="--disable-debug-mode"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "DISABLE_MM_REPLACEMENT" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_MM_REPLACEMENT=ON"
+          $env:EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_MM_REPLACEMENT=ON"
         } else {
-          $EVENT_CONFIGURE_OPTIONS="--disable-malloc-replacement"
+          $env:EVENT_CONFIGURE_OPTIONS="--disable-malloc-replacement"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "DUNICODE" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
-          $EVENT_CMAKE_OPTIONS="-DCMAKE_C_FLAGS='-DUNICODE -D_UNICODE'"
+          $env:EVENT_CMAKE_OPTIONS="-DCMAKE_C_FLAGS='-DUNICODE -D_UNICODE'"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_SHARED" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
+          $env:EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_STATIC" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
-          $EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
+          $env:EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         }
         if ($env:EVENT_BUILD_METHOD -eq 'autotools') {
           $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
