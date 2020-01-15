@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2016,windows-2019]
+        os: [windows-2016]
         EVENT_BUILD_METHOD: [cmake, autotools]
         EVENT_MATRIX: ["","LIBRARY_TYPE_STATIC","DISABLE_OPENSSL","DISABLE_THREAD_SUPPORT","DISABLE_DEBUG_MODE","DISABLE_MM_REPLACEMENT","DUNICODE","TEST_EXPORT_SHARED","TEST_EXPORT_STATIC"]    
         exclude:
