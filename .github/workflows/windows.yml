@@ -10,12 +10,12 @@ on:
     - '*'
 
 jobs:
-  windows-latest:
+  windows-2016:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
+        os: [windows-2016]
         EVENT_BUILD_METHOD: [cmake, autotools]
         EVENT_MATRIX: ["","LIBRARY_TYPE_STATIC","DISABLE_OPENSSL","DISABLE_THREAD_SUPPORT","DISABLE_DEBUG_MODE","DISABLE_MM_REPLACEMENT","DUNICODE","TEST_EXPORT_SHARED","TEST_EXPORT_STATIC"]    
         exclude:
@@ -39,13 +39,13 @@ jobs:
 
     - name: cache openssl
       id: cache-openssl
-      uses: actions/cache@v1.1.0
+      uses: actions/cache@v1.0.3
       with:
         path: C:\vcpkg\installed
         key: ${{ matrix.os }}-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
 
     - name: cache build
-      uses: actions/cache@v1.1.0
+      uses: actions/cache@v1.0.3
       with:
         path: build
         key: build-${{ matrix.os }}-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
