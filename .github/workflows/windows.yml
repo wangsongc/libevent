@@ -42,13 +42,13 @@ jobs:
       uses: actions/cache@v1.0.3
       with:
         path: C:\vcpkg\installed
-        key: ${{ matrix.os }}-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
+        key: ${{ matrix.os }}-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}-openssl
 
     - name: cache build
       uses: actions/cache@v1.0.3
       with:
         path: build
-        key: build-${{ matrix.os }}-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
+        key: ${{ matrix.os }}-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}-build
     - name: install openssl
       shell: powershell
       run: | 
@@ -128,7 +128,7 @@ jobs:
         } else {
           $env:PATH="C:\windows\system32;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
 
-          md build 2> $null
+          mkdir build 2> $null
           cd build
           echo "EVENT_CMAKE_OPTIONS:$env:EVENT_CMAKE_OPTIONS"
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
@@ -174,13 +174,13 @@ jobs:
       uses: actions/cache@v1.1.0
       with:
         path: C:\vcpkg\installed
-        key: ${{ matrix.os }}-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
+        key: ${{ matrix.os }}-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}-openssl
 
     - name: cache build
       uses: actions/cache@v1.1.0
       with:
         path: build
-        key: build-${{ matrix.os }}-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
+        key: ${{ matrix.os }}-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}-build
 
     - name: install openssl
       shell: powershell
