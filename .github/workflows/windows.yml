@@ -10,12 +10,12 @@ on:
     - '*'
 
 jobs:
-  windows2016:
+  windows-latest:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2016]
+        os: [windows-latest]
         EVENT_BUILD_METHOD: [cmake, autotools]
         EVENT_MATRIX: ["","LIBRARY_TYPE_STATIC","DISABLE_OPENSSL","DISABLE_THREAD_SUPPORT","DISABLE_DEBUG_MODE","DISABLE_MM_REPLACEMENT","DUNICODE","TEST_EXPORT_SHARED","TEST_EXPORT_STATIC"]    
         exclude:
@@ -61,7 +61,7 @@ jobs:
     - name: build and test
       env:
         OPENSSL_ROOT_DIR: C:\vcpkg\installed\x64-windows
-        MPATH: C:\Program Files\Git\mingw64;C:\windows\system32
+        MPATH: C:\Program Files\Git\mingw64
         EVENT_TESTS_PARALLEL: 1
         EVENT_BUILD_PARALLEL: 10 
       shell: powershell
@@ -106,7 +106,7 @@ jobs:
           $env:EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         }
         if ($env:EVENT_BUILD_METHOD -eq 'autotools') {
-          $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
+          $env:PATH="$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
           $env:LDFLAGS="-L$($env:OPENSSL_ROOT_DIR)/lib -L$($env:OPENSSL_ROOT_DIR)"
           $env:CFLAGS="-I$($env:OPENSSL_ROOT_DIR)/include"
 
@@ -125,7 +125,6 @@ jobs:
           make verify -j $EVENT_TESTS_PARALLEL 2>&1 '
 
           bash -c $script
-
         } else {
           $env:PATH="C:\windows\system32;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
 
@@ -181,7 +180,7 @@ jobs:
       uses: actions/cache@v1.1.0
       with:
         path: build
-        key: build-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
+        key: build-${{ matrix.os }}-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
 
     - name: install openssl
       shell: powershell
@@ -195,7 +194,6 @@ jobs:
     - name: build and test
       env:
         OPENSSL_ROOT_DIR: C:\vcpkg\installed\x64-windows
-        MPATH: C:\Program Files\Git\mingw64
         EVENT_TESTS_PARALLEL: 1
         EVENT_BUILD_PARALLEL: 10 
       shell: powershell
