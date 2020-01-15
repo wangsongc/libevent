@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2019]
+        os: [windows-2016]
         EVENT_BUILD_METHOD: [cmake, autotools]
         EVENT_MATRIX: ["","LIBRARY_TYPE_STATIC","DISABLE_OPENSSL","DISABLE_THREAD_SUPPORT","DISABLE_DEBUG_MODE","DISABLE_MM_REPLACEMENT","DUNICODE","TEST_EXPORT_SHARED","TEST_EXPORT_STATIC"]    
         exclude:
@@ -49,7 +49,6 @@ jobs:
       with:
         path: build
         key: build-${{ matrix.os }}-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
-
     - name: install openssl
       shell: powershell
       run: | 
@@ -62,7 +61,7 @@ jobs:
     - name: build and test
       env:
         OPENSSL_ROOT_DIR: C:\vcpkg\installed\x64-windows
-        MPATH: C:\Program Files\Git\mingw64
+        MPATH: C:\Program Files\Git\mingw64;C:\windows\system32
         EVENT_TESTS_PARALLEL: 1
         EVENT_BUILD_PARALLEL: 10 
       shell: powershell
@@ -128,7 +127,7 @@ jobs:
           bash -c $script
 
         } else {
-          $env:PATH="$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
+          $env:PATH="C:\windows\system32;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
 
           md build 2> $null
           cd build
