@@ -104,7 +104,7 @@ jobs:
           $env:EVENT_CMAKE_OPTIONS="-DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         }
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "TEST_EXPORT_STATIC" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
-          $env:EVENT_CMAKE_OPTIONS=" -DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
+          $env:EVENT_CMAKE_OPTIONS="-DEVENT__LIBRARY_TYPE=STATIC -DEVENT__DISABLE_TESTS=ON -DEVENT__DISABLE_SAMPLES=ON"
         }
         if ($env:EVENT_BUILD_METHOD -eq 'autotools') {
           $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
@@ -135,11 +135,12 @@ jobs:
           echo "EVENT_CMAKE_OPTIONS:$env:EVENT_CMAKE_OPTIONS"
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           if ("${{ matrix.os }}" -eq "windows-2016") {
-            cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS
+            $env:cmake_cmd="cmake -G 'Visual Studio 15 2017 Win64' .. $env:EVENT_CMAKE_OPTIONS"
           }
           if ("${{ matrix.os }}" -eq "windows-2019") {
-            cmake -G 'Visual Studio 16 2019' -A x64 .. $env:EVENT_CMAKE_OPTIONS
+            $env:cmake_cmd="cmake -G 'Visual Studio 16 2019' -A x64 .. $env:EVENT_CMAKE_OPTIONS"
           }
+          Invoke-Expression $env:cmake_cmd
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
           cmake --build . -j $env:EVENT_BUILD_PARALLEL -- /nologo /verbosity:minimal
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
