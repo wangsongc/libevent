@@ -126,9 +126,10 @@ jobs:
 
           bash -c $script
         } else {
-          $env:PATH="C:\windows\system32;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
-
-          mkdir build 2> $null
+          $env:PATH="$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
+          if(-not (Test-Path -Path "./build")){
+            mkdir build 2> $null
+          }
           cd build
           echo "EVENT_CMAKE_OPTIONS:$env:EVENT_CMAKE_OPTIONS"
           if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
