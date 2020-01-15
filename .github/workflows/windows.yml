@@ -202,7 +202,9 @@ jobs:
         openssl version
         $env:EVENT_CONFIGURE_OPTIONS=""   
         $env:PATH="$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
-        md build 2> $null
+        if(-not (Test-Path -Path "./build")){
+            mkdir build 2> $null
+        }
         cd build
         if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
         $env:cmake_cmd="cmake -G 'Visual Studio 16 2019' -A x64 .. $env:EVENT_CMAKE_OPTIONS"
