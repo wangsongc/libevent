@@ -60,7 +60,7 @@ jobs:
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
           $EVENT_CMAKE_OPTIONS=""
         } else {
-          $EVENT_CONFIGURE_OPTIONS=""
+          $EVENT_CONFIGURE_OPTIONS="--disable-openssl"
         }
          
         if ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "autotools" ) {
