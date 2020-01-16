@@ -69,7 +69,7 @@ jobs:
           $env:CFLAGS="-I$($env:OPENSSL_ROOT_DIR)/include"
           $script='
           pwd
-          ls
+          dir
           ./autogen.sh 2>&1 3>&1
           [[ $? -ne 0 ]] && exit 1
           mkdir build-autotools 2>/dev/null
