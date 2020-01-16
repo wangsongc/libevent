@@ -24,7 +24,7 @@ jobs:
       uses: actions/cache@v1.1.0
       with:
         path: C:\vcpkg\installed
-        key: ${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
+        key: windows-2016-cmake--openssl
 
     - name: cache build
       uses: actions/cache@v1.1.0
