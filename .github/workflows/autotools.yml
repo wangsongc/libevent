@@ -64,7 +64,7 @@ jobs:
         }
          
         if ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "autotools" ) {
-          $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
+          $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR\bin;$env:PATH"
           $env:LDFLAGS="-L$($env:OPENSSL_ROOT_DIR)\lib -L$($env:OPENSSL_ROOT_DIR)"
           $env:CFLAGS="-I$($env:OPENSSL_ROOT_DIR)\include"
           $script='
