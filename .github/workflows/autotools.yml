@@ -51,7 +51,7 @@ jobs:
     - name: build and test
       env:
         OPENSSL_ROOT_DIR: C:\vcpkg\installed\x64-windows
-        MPATH: C:\vcpkg\installed\x64-windows
+        MPATH: D:\a\_temp\msys\msys64/mingw64/bin;D:\a\_temp\msys\msys64\usr\bin
         EVENT_TESTS_PARALLEL: 1
         EVENT_BUILD_PARALLEL: 10 
       shell: powershell
@@ -81,5 +81,5 @@ jobs:
           make verify -j $EVENT_TESTS_PARALLEL 2>&1
           '
           pwd
-          D:\a\_temp\msys\\msys64\usr\bin\bash.exe -c $script
+          D:\a\_temp\msys\msys64\usr\bin\bash.exe -c $script
         }
