@@ -59,12 +59,12 @@ jobs:
         openssl version
         echo "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
         ls -R $env:OPENSSL_ROOT\lib
-        if (( "${{ matrix.EVENT_MATRIX }}" -eq "" ) -and ( ${{ matrix.EVENT_BUILD_METHOD }} -eq cmake )) {
+        if (( "${{ matrix.EVENT_MATRIX }}" -eq "" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
           $EVENT_CMAKE_OPTIONS=""
         } else {
           $EVENT_CONFIGURE_OPTIONS=""
         }
-        if ($env:EVENT_BUILD_METHOD -eq 'autotools') {
+        if ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "autotools" ) {
           $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
           $env:LDFLAGS="-L$($env:OPENSSL_ROOT_DIR)/lib -L$($env:OPENSSL_ROOT_DIR)"
           $env:CFLAGS="-I$($env:OPENSSL_ROOT_DIR)/include"
@@ -78,6 +78,7 @@ jobs:
           [[ $? -ne 0 ]] && exit 1
           make -j $EVENT_BUILD_PARALLEL 2>&1
           [[ $? -ne 0 ]] && exit 1
-          make verify -j $EVENT_TESTS_PARALLEL 2>&1 @'
+          make verify -j $EVENT_TESTS_PARALLEL 2>&1
+          @'
           D:\a\_temp\msys\\msys64\usr\bin\bash.exe -c -l $script
         } 
