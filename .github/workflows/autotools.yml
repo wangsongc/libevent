@@ -65,20 +65,20 @@ jobs:
           $EVENT_CONFIGURE_OPTIONS=""
         }
         if ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "autotools" ) {
-          $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
-          $env:LDFLAGS="-L$($env:OPENSSL_ROOT_DIR)/lib -L$($env:OPENSSL_ROOT_DIR)"
-          $env:CFLAGS="-I$($env:OPENSSL_ROOT_DIR)/include"
-          $script=@'
-          ./autogen.sh 2>&1 3>&1
-          [[ $? -ne 0 ]] && exit 1
-          mkdir build-autotools 2>/dev/null
-          cd build-autotools
-          [[ $? -ne 0 ]] && exit 1
-          ../configure $EVENT_CONFIGURE_OPTIONS 2>&1
-          [[ $? -ne 0 ]] && exit 1
-          make -j $EVENT_BUILD_PARALLEL 2>&1
-          [[ $? -ne 0 ]] && exit 1
-          make verify -j $EVENT_TESTS_PARALLEL 2>&1
-          @'
-          D:\a\_temp\msys\\msys64\usr\bin\bash.exe -c -l $script
+        $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
+        $env:LDFLAGS="-L$($env:OPENSSL_ROOT_DIR)/lib -L$($env:OPENSSL_ROOT_DIR)"
+        $env:CFLAGS="-I$($env:OPENSSL_ROOT_DIR)/include"
+        $script=@'
+        ./autogen.sh 2>&1 3>&1
+        [[ $? -ne 0 ]] && exit 1
+        mkdir build-autotools 2>/dev/null
+        cd build-autotools
+        [[ $? -ne 0 ]] && exit 1
+        ../configure $EVENT_CONFIGURE_OPTIONS 2>&1
+        [[ $? -ne 0 ]] && exit 1
+        make -j $EVENT_BUILD_PARALLEL 2>&1
+        [[ $? -ne 0 ]] && exit 1
+        make verify -j $EVENT_TESTS_PARALLEL 2>&1
+        @'
+        D:\a\_temp\msys\\msys64\usr\bin\bash.exe -c -l $script
         }
