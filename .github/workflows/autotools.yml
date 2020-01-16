@@ -75,7 +75,7 @@ jobs:
           mkdir build-autotools 2>/dev/null
           cd build-autotools
           [[ $? -ne 0 ]] && exit 1
-          ../configure $env:EVENT_CONFIGURE_OPTIONS 2>&1
+          ../configure $EVENT_CONFIGURE_OPTIONS 2>&1
           [[ $? -ne 0 ]] && exit 1
           make -j $EVENT_BUILD_PARALLEL 2>&1
           [[ $? -ne 0 ]] && exit 1
