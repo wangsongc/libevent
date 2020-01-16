@@ -81,5 +81,5 @@ jobs:
           [[ $? -ne 0 ]] && exit 1
           make verify -j $EVENT_TESTS_PARALLEL 2>&1
           '
-          D:\a\_temp\msys\\msys64\usr\bin\bash.exe -c $script
+          & D:\a\_temp\msys\\msys64\usr\bin\bash.exe -c $script
         }
