@@ -59,6 +59,7 @@ jobs:
         openssl version
         ls D:\a\_temp\msys\msys64\usr
         ls D:\a\_temp\msys\msys64\usr\lib
+        ls D:\a\_temp\msys\msys64\usr\lib\openssl
         
         if (( "${{ matrix.EVENT_MATRIX }}" -eq "" ) -and ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "cmake" )) {
           $env:EVENT_CMAKE_OPTIONS=""
