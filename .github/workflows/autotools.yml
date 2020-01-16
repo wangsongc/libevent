@@ -64,7 +64,7 @@ jobs:
         } else {
           $EVENT_CONFIGURE_OPTIONS=""
         }
-        if ( "${{ matrix.EVENT_BUILD_METHOD }}" -eq "autotools" ) {
+        
         $env:PATH="$env:MPATH;$env:OPENSSL_ROOT_DIR/bin;$env:PATH"
         $env:LDFLAGS="-L$($env:OPENSSL_ROOT_DIR)/lib -L$($env:OPENSSL_ROOT_DIR)"
         $env:CFLAGS="-I$($env:OPENSSL_ROOT_DIR)/include"
@@ -81,4 +81,3 @@ jobs:
         make verify -j $EVENT_TESTS_PARALLEL 2>&1
         @'
         D:\a\_temp\msys\\msys64\usr\bin\bash.exe -c -l $script
-        }
