@@ -41,8 +41,8 @@ jobs:
         msys2do pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config make autoconf automake msys/libtool pkg-config openssl-devel
     - name: build and test
       env:
-        OPENSSL_ROOT_DIR: D:/a/_temp/msys/msys64/usr
-        MPATH: D:/a/_temp/msys/msys64/mingw64/bin;D:/a/_temp/msys/msys64/usr/bin
+        OPENSSL_ROOT_DIR: /d/a/_temp/msys/msys64/usr
+        MPATH: /d/a/_temp/msys/msys64/mingw64/bin;/d/a/_temp/msys/msys64/usr/bin
         EVENT_TESTS_PARALLEL: 1
         EVENT_BUILD_PARALLEL: 10 
       shell: powershell
