@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize]
   push:
     branches:
-    - gha-1
+    - gha-1-no
     tags:
     - '*'
 
