@@ -42,7 +42,7 @@ jobs:
     - name: build and test
       env:
         OPENSSL_ROOT_DIR: /d/a/_temp/msys/msys64/usr
-        MPATH: /d/a/_temp/msys/msys64/mingw64/bin;/d/a/_temp/msys/msys64/usr/bin
+        MPATH: /d/a/_temp/msys/msys64/mingw64/bin:/d/a/_temp/msys/msys64/usr/bin
         EVENT_TESTS_PARALLEL: 1
         EVENT_BUILD_PARALLEL: 10 
       shell: powershell
