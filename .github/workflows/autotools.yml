@@ -32,15 +32,6 @@ jobs:
         path: build
         key: build-${{ matrix.EVENT_BUILD_METHOD }}-${{ matrix.EVENT_MATRIX }}
 
-    - name: install openssl
-      shell: powershell
-      run: | 
-       vcpkg search openssl
-       vcpkg install openssl:x64-windows
-       echo "VCPKG_INSTALLATION_ROOT: $env:VCPKG_INSTALLATION_ROOT"
-       ls $env:VCPKG_INSTALLATION_ROOT
-      if: steps.cache-openssl.outputs.cache-hit != 'true'
-
     - uses: numworks/setup-msys2@v1
       with: 
     # Variant of the environment to set by default: MSYS, MINGW32 or MINGW64
@@ -79,5 +70,6 @@ jobs:
           [[ $? -ne 0 ]] && exit 1
           make verify -j $EVENT_TESTS_PARALLEL 2>&1
           '
+          [[ $? -ne 0 ]] && exit 1
           D:\a\_temp\msys\msys64\usr\bin\bash.exe -c $script
         }
