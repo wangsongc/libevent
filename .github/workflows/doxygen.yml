@@ -1,0 +1,30 @@
+name: doxygen
+
+on:
+  push:
+    branches:
+    - master
+    - release/*
+
+jobs:
+  Doxygen:
+    runs-on: ubuntu-16.04
+    strategy:
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v1
+    - name: install depend
+      run: |
+        sudo apt install zlib1g-dev libssl-dev build-essential cmake lcov doxygen
+    - name: Generate Doxygen
+      shell: bash
+      run: | 
+        mkdir -p build &&
+        cd build &&
+        cmake -DEVENT__DOXYGEN=ON .. &&
+        cmake --build . --target doxygen;
+    - name: GitHub Pages Deploy
+      uses: maxheld83/ghpages@v0.2.1
+      env:
+        BUILD_DIR : /home/runner/work/libevent/libevent/build/doxygen/html
+        GH_PAT: ${{ secrets.GHA_TOKEN }}
