@@ -81,7 +81,7 @@ before_install:
   - export JOBS=20
   - export TIMEOUT=50
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-      export OPENSSL_ROOT=$(echo /usr/local/Cellar/openssl/*);
+      export OPENSSL_ROOT=$(echo /usr/local/Cellar/openssl@1.1/1.1.1d);
       export
         CMAKE_INCLUDE_PATH=$OPENSSL_ROOT/include
         CMAKE_LIBRARY_PATH=$OPENSSL_ROOT/lib;
