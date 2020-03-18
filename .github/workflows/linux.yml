@@ -3,6 +3,8 @@ name: linux
 
 on:
   pull_request:
+    branches:
+      - master-ok
     types: [opened, synchronize]
     paths-ignore:
       - '**.md'
@@ -11,6 +13,8 @@ on:
       - 'whatsnew*'
       - 'LICENSE'
   push:
+    branches:
+      - master-ok
     paths-ignore:
       - '**.md'
       - '.mailmap'

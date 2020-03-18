@@ -26,13 +26,13 @@ jobs:
       matrix:
         os: [macos-latest]
         EVENT_MATRIX:
-          - NONE
-          - DISABLE_OPENSSL
+          # - NONE
+          # - DISABLE_OPENSSL
           - DISABLE_THREAD_SUPPORT
-          - DISABLE_DEBUG_MODE
-          - DISABLE_MM_REPLACEMENT
-          - TEST_EXPORT_STATIC
-          - TEST_EXPORT_SHARED
+          # - DISABLE_DEBUG_MODE
+          # - DISABLE_MM_REPLACEMENT
+          # - TEST_EXPORT_STATIC
+          # - TEST_EXPORT_SHARED
           - OPENSSL_1_1
 
     steps:
@@ -105,11 +105,11 @@ jobs:
       matrix:
         os: [macos-latest]
         EVENT_MATRIX:
-          - NONE
-          - DISABLE_OPENSSL
+          # - NONE
+          # - DISABLE_OPENSSL
           - DISABLE_THREAD_SUPPORT
-          - DISABLE_DEBUG_MODE
-          - DISABLE_MM_REPLACEMENT
+          # - DISABLE_DEBUG_MODE
+          # - DISABLE_MM_REPLACEMENT
           - OPENSSL_1_1
 
     steps:

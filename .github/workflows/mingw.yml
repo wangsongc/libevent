@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v1.0.3
         with:
           path: D:\a\_temp\msys
-          key: windows-mingw
+          key: windows-mingw-${{ matrix.EVENT_MATRIX }}
 
       - name: Cache Build
         uses: actions/cache@v1.0.3

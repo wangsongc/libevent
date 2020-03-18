@@ -7,6 +7,8 @@ dist: trusty
 osx_image: xcode10.1
 
 branches:
+    branches:
+      - master-ok
   except:
     - /.*appveyor.*/
     - /.*win.*/
