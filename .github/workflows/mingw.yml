@@ -41,11 +41,11 @@ jobs:
           path: D:\a\_temp\msys
           key: windows-mingw-${{ matrix.EVENT_MATRIX }}
 
-      - name: Cache Build
-        uses: actions/cache@v1.0.3
-        with:
-          path: build
-          key: mingw-${{ matrix.EVENT_MATRIX }}
+#       - name: Cache Build
+#         uses: actions/cache@v1.0.3
+#         with:
+#           path: build
+#           key: mingw-${{ matrix.EVENT_MATRIX }}
 
       - uses: numworks/setup-msys2@v1
         if: steps.cache-mingw.outputs.cache-hit != 'true'
