@@ -55,8 +55,7 @@ jobs:
       - name: Install Dependes
         if: steps.cache-mingw.outputs.cache-hit != 'true'
         run: |
-          msys2do pacman -S --noconfirm mingw-w64-x86_64-gcc make autoconf automake libtool mingw-w64-x86_64-openssl
-
+          msys2do pacman -S --noconfirm mingw-w64-x86_64-gcc make autoconf automake libtool mingw-w64-x86_64-openssl mingw-w64-x86_64-python3
       - name: Build And Test
         shell: powershell
         run: |
